@@ -1,12 +1,14 @@
+using UnityEngine;
+
 namespace Script.Graph
 {
-    public abstract class Edge
+    public abstract class Edge : MonoBehaviour
     {
-        public final int _id = Gamemanger.GetNextEdgeId();
+        private int _id { get; } = GameManger.GetNextEdgeId();
         private Node  _node1;
         private Node  _node2;
 
-        private double disconnectionDistance;
+        private double _disconnectionDistance {get;} = -1;
 
         public bool Equals(Edge obj)
         {
