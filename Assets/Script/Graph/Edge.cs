@@ -14,7 +14,7 @@ namespace Script.Graph
 
         public bool Equals(Edge obj)
         {
-            return this._id == obj.GetId();
+            return (_node1 == obj._node1 && _node2 == obj._node2) || (_node1 == obj._node2 && _node2 == obj._node1);
         }
 
         public Edge()

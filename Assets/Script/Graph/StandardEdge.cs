@@ -43,6 +43,13 @@ namespace Script.Graph
             var newposition = _node1.gameObject.transform.position+(_node2.gameObject.transform.position-_node1.gameObject.transform.position)/2;
             transform.position = newposition;
         }
+
+        public void Configure(Node start, Node end)
+        {
+            _node1 = start;
+            _node2 = end;
+            MoveBetweenNodes();
+        }
         
         
         

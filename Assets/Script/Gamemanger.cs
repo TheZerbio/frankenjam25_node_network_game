@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using Script.Graph;
+using UnityEngine;
 
 namespace Script
 {
@@ -26,19 +28,71 @@ namespace Script
         #endregion
         
         private static GameManger _instance;
-        public Graph.Graph PlayerOneGraph;
-        public Graph.Graph PlayerTwoGraph;
+        public GameObject nodePrefab;
+        public GameObject edgePrefab;
+        public Graph.Graph[] PlayerGraphs = new Graph.Graph[2];
         
         public static GameManger GetInstance()
         {
-            return _instance ??= new GameManger();
+            if (_instance == null)
+            {
+                Debug.LogError("GameManger not found, Make Sure you have one in our Scene");
+                return null;
+            }
+            return _instance;
         }
 
-        private GameManger()
+        void Start()
         {
-            PlayerOneGraph = new Graph.Graph();
-            PlayerTwoGraph = new Graph.Graph();
+            if (_instance == null)
+            {
+                _instance = this;
+            }
+            else
+            {
+                Debug.LogError("Multiple GameManger found, Make Sure you have only one in our Scene");
+                Destroy(this);
+            }
+            for (int i = 0; i < PlayerGraphs.Length; i++)
+            {
+                PlayerGraphs[i] = new Graph.Graph();
+            }
         }
+
+        public Node CreateNode(Vector2 position, int fraction)
+        {
+            var nodeGO = Instantiate(nodePrefab, position, Quaternion.identity);
+            var node = nodeGO.GetComponent<Node>();
+            PlayerGraphs[fraction].AddNode(node);
+            return node;
+        }
+
+        public void CreateEdge(Node start, Node end, int fraction)
+        {
+            
+            if (PlayerGraphs[fraction].GetNodes().Contains(end) && PlayerGraphs[fraction].GetNodes().Contains(start))
+            {
+                var edgeGO = Instantiate(nodePrefab, Vector3.zero, Quaternion.identity);
+                var edge = edgeGO.GetComponentInChildren<StandardEdge>();
+                edge.Configure(start, end);
+                foreach (Edge e  in PlayerGraphs[fraction].GetEdges())
+                {
+                    if (e.Equals(edge))
+                    {
+                        Debug.Log("Edge already exists, skipping");
+                    }
+                }
+                PlayerGraphs[fraction].AddEdge(edge);
+            }
+            
+        }
+
+        public void BuildNodeFromNode(Node node, Vector2 position, int fraction)
+        {
+            var newNode = CreateNode(position, fraction);
+            CreateEdge(node, newNode, fraction);
+        }
+        
         
     }
 }
