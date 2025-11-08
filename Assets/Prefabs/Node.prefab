@@ -181,17 +181,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecddd4dc5bece0343a31f367f949fc67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CircleRenderer
+  lineWidth: 0.08
   circles:
   - radius: 15
     color: {r: 1, g: 0, b: 0, a: 1}
-    dashLength: 0.5
-    gapLength: 0.3
+    dashCountMultiplier: 25
+    segmentCount: 64
+    lineRenderer: {fileID: 0}
   - radius: 20
     color: {r: 0, g: 0, b: 1, a: 1}
-    dashLength: 0.5
-    gapLength: 0.3
+    dashCountMultiplier: 25
+    segmentCount: 64
+    lineRenderer: {fileID: 0}
   - radius: 25
     color: {r: 0, g: 1, b: 0, a: 1}
-    dashLength: 0.5
-    gapLength: 0.3
-  showInPlayMode: 1
+    dashCountMultiplier: 25
+    segmentCount: 64
+    lineRenderer: {fileID: 0}

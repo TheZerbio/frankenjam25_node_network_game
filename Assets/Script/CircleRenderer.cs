@@ -1,154 +1,115 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-// Add this component to a GameObject to see the dashed circles
-public class DashedCircleDrawer : MonoBehaviour
+[RequireComponent(typeof(Transform))]
+public class MultiDashedCircles : MonoBehaviour
 {
     [System.Serializable]
     public class Circle
     {
-        public float radius = 3f;
+        public float radius = 1f;
         public Color color = Color.white;
-        
-        [Tooltip("The number of dashes the circle will be split into.")]
-        [Range(1, 100)] // Use Range for a slider in the inspector
-        public int segmentCount = 18; 
+        [Tooltip("Multiplier to scale the dash texture. Higher = more dashes.")]
+        public int dashCountMultiplier = 1;
+        [Tooltip("Number of segments for smoothness.")]
+        public int segmentCount = 64;
+
+        [HideInInspector] public LineRenderer lineRenderer;
     }
 
-    [Header("Circles to draw")]
-    public Circle[] circles = new Circle[]
-    {
-        new Circle { radius = 2f, color = Color.red, segmentCount = 8 },
-        new Circle { radius = 4f, color = Color.green, segmentCount = 12 },
-        new Circle { radius = 6f, color = Color.blue, segmentCount = 16 }
-    };
+    public float lineWidth = 0.1f;
+    public bool showCircles = true; // NEW: Toggle visibility
+    public List<Circle> circles = new List<Circle>();
 
-    [Header("Line Renderer Settings")]
-    public float lineWidth = 0.05f;
-
-    private LineRenderer[] lineRenderers;
-
-    void Update()
+    private void Awake()
     {
-        KillAllChildren();
-        DrawCircles();
-    }
-    private void Start()
-    {
-        CreateLineRenderers();
-        DrawCircles();
-    }
-
-    private void CreateLineRenderers()
-    {
-        // Destroy old renderers first to prevent duplicates
-        if (lineRenderers != null)
+        // Create LineRenderers for each circle
+        foreach (var circle in circles)
         {
-            foreach (var lr in lineRenderers)
+            if (circle.lineRenderer == null)
             {
-                if (lr != null)
-                {
-                    // Use DestroyImmediate when in editor (like OnValidate)
-                    if (Application.isPlaying)
-                        Destroy(lr.gameObject);
-                    else
-                        DestroyImmediate(lr.gameObject);
-                }
+                GameObject lrObj = new GameObject("CircleLR");
+                lrObj.transform.parent = transform;
+                lrObj.transform.localPosition = Vector3.zero;
+
+                LineRenderer lr = lrObj.AddComponent<LineRenderer>();
+                lr.useWorldSpace = true;
+                lr.loop = true;
+                lr.widthMultiplier = lineWidth;
+                lr.material = new Material(Shader.Find("Sprites/Default"));
+
+                circle.lineRenderer = lr;
             }
         }
 
-        lineRenderers = new LineRenderer[circles.Length];
-
-        for (int i = 0; i < circles.Length; i++)
-        {
-            GameObject go = new GameObject("Circle_" + i);
-            go.transform.parent = transform;
-            go.transform.localPosition = Vector3.zero;
-            go.transform.localRotation = Quaternion.identity;
-
-            LineRenderer lr = go.AddComponent<LineRenderer>();
-            lr.useWorldSpace = true; // Points will be in world space
-            lr.loop = false; // We are drawing segments, not a continuous loop
-            
-            // Use a simple default material
-            lr.material = new Material(Shader.Find("Sprites/Default")); 
-            
-            lr.widthMultiplier = lineWidth;
-            lr.positionCount = 0; // Start empty
-
-            lineRenderers[i] = lr;
-        }
+        UpdateVisibility();
     }
 
-    /// <summary>
-    /// Calculates and draws all the dashed circles.
-    /// </summary>
+    private void FixedUpdate()
+    {
+        DrawCircles();
+    }
+
     private void DrawCircles()
     {
-        if (lineRenderers == null) return;
-
-        for (int i = 0; i < circles.Length; i++)
+        foreach (var circle in circles)
         {
-            if (i >= lineRenderers.Length || lineRenderers[i] == null)
+            LineRenderer lr = circle.lineRenderer;
+            if (lr == null) continue;
+
+            lr.positionCount = circle.segmentCount;
+
+            Vector3[] points = new Vector3[circle.segmentCount];
+            float angleStep = 360f / circle.segmentCount;
+
+            for (int i = 0; i < circle.segmentCount; i++)
             {
-                Debug.LogWarning("LineRenderer missing, recreating...");
-                CreateLineRenderers(); // Something went wrong, try to fix
-            }
-            
-            Circle circle = circles[i];
-            LineRenderer lr = lineRenderers[i];
-
-            // Apply all settings
-            lr.startColor = lr.endColor = circle.color;
-            lr.widthMultiplier = lineWidth;
-            lr.material.color = circle.color; // Set material tint
-
-            // Ensure we have at least 4 segment
-            int segmentCount = Mathf.Max(4, circle.segmentCount);
-
-            // Calculate the angle for one full segment (one dash + one gap)
-            float anglePerFullSegment = 360f / segmentCount;
-            
-            // The dash will be half of that angle
-            float dashAngle = anglePerFullSegment / 2f;
-
-            // Each dash needs 2 points (a start and an end)
-            int pointCount = segmentCount * 2;
-            Vector3[] points = new Vector3[pointCount];
-
-            for (int j = 0; j < segmentCount; j++)
-            {
-                // Calculate the start and end angles for this dash
-                float startAngleDeg = j * anglePerFullSegment;
-                float endAngleDeg = startAngleDeg + dashAngle;
-
-                // Convert from degrees to radians for trigonometric functions
-                float startAngleRad = Mathf.Deg2Rad * startAngleDeg;
-                float endAngleRad = Mathf.Deg2Rad * endAngleDeg;
-
-                // Get the direction vectors
-                Vector3 startDir = new Vector3(Mathf.Cos(startAngleRad), Mathf.Sin(startAngleRad), 0f);
-                Vector3 endDir = new Vector3(Mathf.Cos(endAngleRad), Mathf.Sin(endAngleRad), 0f);
-
-                // Calculate the world positions for the points
-                Vector3 startPos = transform.position + startDir * circle.radius;
-                Vector3 endPos = transform.position + endDir * circle.radius;
-
-                // Assign points to the array
-                points[j * 2] = startPos;
-                points[j * 2 + 1] = endPos;
+                float angleRad = Mathf.Deg2Rad * (i * angleStep);
+                points[i] = transform.position + new Vector3(Mathf.Cos(angleRad), Mathf.Sin(angleRad), 0f) * circle.radius;
             }
 
-            // Apply the points to the LineRenderer
-            lr.positionCount = pointCount;
             lr.SetPositions(points);
+            lr.startColor = lr.endColor = circle.color;
+            lr.material.color = circle.color;
+            lr.material.mainTexture = GenerateDashTexture(circle.dashCountMultiplier);
+            lr.material.mainTextureScale = new Vector2(circle.segmentCount / 4f * circle.dashCountMultiplier, 1);
+
+            // Update visibility
+            lr.gameObject.SetActive(showCircles);
         }
     }
 
-    private void KillAllChildren()
+    private Texture2D GenerateDashTexture(int dashCountMultiplier)
     {
-        foreach(Transform child in transform)
+        int texWidth = 4 * Mathf.Max(1, dashCountMultiplier);
+        int texHeight = 1;
+        Texture2D tex = new Texture2D(texWidth, texHeight);
+        tex.filterMode = FilterMode.Point;
+
+        Color[] colors = new Color[texWidth * texHeight];
+        for (int i = 0; i < texWidth; i++)
         {
-            Destroy(child.gameObject);
+            colors[i] = (i % 2 == 0) ? Color.white : new Color(0, 0, 0, 0);
+        }
+
+        tex.SetPixels(colors);
+        tex.Apply();
+        return tex;
+    }
+
+    // Call this to toggle circles at runtime
+    public void SetCirclesVisible(bool visible)
+    {
+        showCircles = visible;
+        UpdateVisibility();
+    }
+
+    private void UpdateVisibility()
+    {
+        foreach (var circle in circles)
+        {
+            if (circle.lineRenderer != null)
+                circle.lineRenderer.gameObject.SetActive(showCircles);
         }
     }
 }

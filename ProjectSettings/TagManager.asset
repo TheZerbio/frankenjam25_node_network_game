@@ -44,6 +44,9 @@ TagManager:
   - name: Bottom
     uniqueID: 2343773587
     locked: 0
+  - name: Dashes
+    uniqueID: 672831071
+    locked: 0
   - name: Middle
     uniqueID: 691155025
     locked: 0
