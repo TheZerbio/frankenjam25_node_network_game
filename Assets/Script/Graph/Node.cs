@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class Node: MonoBehaviour
 {
     public long id { get; }
+    public int fractionID { get; set; }
     public Vector2 position { get; private set; }
     public int lemmingCapacity { get; } = 0;
     public int lemmingCount { get; }

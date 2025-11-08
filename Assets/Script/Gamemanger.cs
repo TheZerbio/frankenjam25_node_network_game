@@ -23,11 +23,12 @@ namespace Script
         
         public static int GetNextWorkerId()
         {
-            return _nextEdgeId++;
+            return _nextWorkerId++;
         }
         #endregion
         
         private static GameManger _instance;
+        public Color[] colors;
         public GameObject nodePrefab;
         public GameObject edgePrefab;
         public Graph.Graph[] PlayerGraphs = new Graph.Graph[2];

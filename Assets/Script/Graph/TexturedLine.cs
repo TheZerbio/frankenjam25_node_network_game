@@ -25,6 +25,7 @@ namespace Script.Graph
 
             // Optional: make it tile along the length of the line
             lr.textureMode = LineTextureMode.Tile;
+            lr.sortingLayerName = "Bottom";
         }
 
         void Update()
