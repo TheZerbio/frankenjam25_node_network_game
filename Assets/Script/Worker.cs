@@ -23,7 +23,7 @@ public class Worker : MonoBehaviour, ISelectable
     
     // movement 
     public float speed = 2f;
-    private Vector2 _target;
+    private Vector2? _target = null;
     
     
     private SpriteRenderer _renderer;
@@ -53,13 +53,13 @@ public class Worker : MonoBehaviour, ISelectable
         if (_targetObject != null)  _target = _targetObject.getGameObject().transform.position;
         
         // stop the motion when the target is reached
-        if (Vector2.Distance(_target, _rigidbody.position) <= _stoppingDistance)
-            _target = Vector2.zero;
+        if (_target != null && Vector2.Distance((Vector2)_target, _rigidbody.position) <= _stoppingDistance)
+            _target = null;
         
-        if (_target != Vector2.zero)
+        if (_target != null)
         {
             _stoppingDistance = 0.1f;
-            Vector2 applyForce = _target - _rigidbody.position;
+            Vector2 applyForce = (_target?? Vector2.negativeInfinity) - _rigidbody.position;
             _rigidbody.AddForce(applyForce);
             _rigidbody.linearVelocity = Vector2.ClampMagnitude(_rigidbody.linearVelocity, speed);
             
@@ -72,7 +72,12 @@ public class Worker : MonoBehaviour, ISelectable
         
     }
 
-    
+
+    public ClickableType GetElementType()
+    {
+        return ClickableType.Lemming;
+    }
+
     /// ISelectable Implementation
     public void OnSelect() => isSelected =  true;
     
@@ -101,7 +106,7 @@ public class Worker : MonoBehaviour, ISelectable
         var otherSelectable = other.gameObject.GetComponent<ISelectable>();
         if (otherSelectable == null) return;
 
-        if (otherSelectable.elementType == ClickableType.Lemming)
+        if (otherSelectable.GetElementType() == ClickableType.Lemming)
         {
             Worker coWorker = (Worker)otherSelectable;
             if (coWorker.fractionID != fractionID)
@@ -117,7 +122,7 @@ public class Worker : MonoBehaviour, ISelectable
             }
             
             
-        } else if (otherSelectable.elementType == ClickableType.Node)
+        } else if (otherSelectable.GetElementType() == ClickableType.Node)
         {
             Node otherNode = otherSelectable as Node;
             PullNode(otherNode);
