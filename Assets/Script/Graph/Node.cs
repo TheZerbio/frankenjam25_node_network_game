@@ -1,7 +1,7 @@
 using Script;
 using UnityEngine;
 
-public abstract class Node: MonoBehaviour
+public abstract class Node: MonoBehaviour, ISelectable
 {
     public long id { get; }
     public int fractionID { get; set; }
@@ -31,13 +31,21 @@ public abstract class Node: MonoBehaviour
         this.connectionRadius = connectionRadius;
         this.workRadius = workRadius;
     }
-    
-    
 
-    public void pull(int numberOfPullers, Vector2 directionTowards)
+    public ClickableType GetElementType()
     {
-        _rigidbody.AddForce((numberOfPullers-lemmingCount) * directionTowards.normalized);
+        return ClickableType.Node;
     }
-    
+
+    public void OnSelect(){}
+  
+
+    public void OnDeselect() { }
+
+    public void OnActionToVoid(Vector2 position) { }
+
+    public void OnActionToElement(ISelectable element) { }
+
+    public GameObject getGameObject() =>  gameObject; 
     
 }
