@@ -133,7 +133,7 @@ public class Worker : MonoBehaviour, ISelectable
             Worker coWorker = (Worker)otherSelectable;
             if (coWorker.fractionID != fractionID)
             {
-                Worker.Destroy(this, 500);
+                Worker.Destroy(this.gameObject);
                 return;
             }
 
