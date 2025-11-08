@@ -2,7 +2,7 @@
 
 namespace Script
 {
-    public class StandardNote : Node
+    public class StandardNode : Node
     {
         const int CAPACITY = 20; 
         const float WORK_RADIUS = 20f;
@@ -12,7 +12,7 @@ namespace Script
         public const int worker_cost = 10;
 
 
-        public StandardNote(Vector2 position)
+        public StandardNode(Vector2 position)
             : base(position, CAPACITY, WORK_RADIUS, VISION_RADIUS, CONNECTION_RADIUS)
         {
             

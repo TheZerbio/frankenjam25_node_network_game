@@ -1,4 +1,5 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class Worker : MonoBehaviour, IClickable
@@ -6,6 +7,7 @@ public class Worker : MonoBehaviour, IClickable
     public long id;
     Color _defaultColor = Color.darkOrange;
     Color _highlightColor = Color.darkCyan;
+    private const float STANDARD_PULL_FORCE = 1f;
     private SpriteRenderer _renderer;
 
     private float _speed = 2f;
@@ -13,7 +15,8 @@ public class Worker : MonoBehaviour, IClickable
     private Vector2 _target;
     private Rigidbody2D _rigidbody;
 
-    public static long selectedId = -1; 
+    public static long selectedId = -1;
+    public float pull_force = STANDARD_PULL_FORCE;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -57,5 +60,16 @@ public class Worker : MonoBehaviour, IClickable
     {
         _target = position;
        
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+            Debug.Log(other.gameObject.name);
+            FixedJoint2D joint = gameObject.AddComponent<FixedJoint2D>();
+            joint.connectedBody = other.gameObject.GetComponent<Rigidbody2D>();
+            joint.connectedAnchor = other.gameObject.transform.position;
+            joint.breakForce = math.INFINITY;
+            joint.breakTorque = math.INFINITY;
+        
     }
 }
