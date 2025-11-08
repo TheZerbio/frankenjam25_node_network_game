@@ -1,10 +1,13 @@
-﻿namespace Script
+﻿using UnityEngine;
+
+namespace Script
 {
-    public class GameManger
+    public class GameManger : MonoBehaviour
     {
         #region IDs
         private static int _nextNodeId = 0;
         private static int _nextEdgeId = 0;
+        private static int _nextWorkerId = 0;
         
         public static int GetNextNodeId()
         {
@@ -15,11 +18,16 @@
         {
             return _nextEdgeId++;
         }
+        
+        public static int GetNextWorkerId()
+        {
+            return _nextEdgeId++;
+        }
         #endregion
         
         private static GameManger _instance;
-        public Graph.Graph playerOneGraph;
-        public Graph.Graph playerTwoGraph;
+        public Graph.Graph PlayerOneGraph;
+        public Graph.Graph PlayerTwoGraph;
         
         public static GameManger GetInstance()
         {
@@ -28,8 +36,8 @@
 
         private GameManger()
         {
-            playerOneGraph = new Graph.Graph();
-            playerTwoGraph = new Graph.Graph();
+            PlayerOneGraph = new Graph.Graph();
+            PlayerTwoGraph = new Graph.Graph();
         }
         
     }

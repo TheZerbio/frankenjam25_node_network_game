@@ -1,10 +1,11 @@
 using System;
+using Script;
 using Unity.Mathematics;
 using UnityEngine;
 
 public class Worker : MonoBehaviour, IClickable
 {
-    public long id;
+    private long id = GameManger.GetNextWorkerId();
     Color _defaultColor = Color.darkOrange;
     Color _highlightColor = Color.darkCyan;
     private const float STANDARD_PULL_FORCE = 1f;
