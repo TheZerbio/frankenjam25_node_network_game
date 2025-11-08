@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3431634369546104341}
   - component: {fileID: 466064853357167965}
   - component: {fileID: 1801665163240400984}
+  - component: {fileID: 5348750532228483281}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -70,7 +71,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 100
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -151,9 +152,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraGrabPanWithBoundsGizmo
   zoomSpeed: 500
-  minZoom: 10
-  maxZoom: 1000
+  minZoom: 5
+  maxZoom: 75
   panSpeed: 1
   minBounds: {x: -800, y: -450}
   maxBounds: {x: 800, y: 450}
   boundsColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+--- !u!114 &5348750532228483281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5851551561236429745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 431e612626bb1ff49a6400b6c3f86340, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClickDetection

@@ -6,11 +6,15 @@ namespace Script.Graph
     {
         private TexturedLine _line;
         public Texture2D lineTexture;
+        public Color lineColor = Color.black;
+        public float ConnectionVolume = 1000f;
 
         void Start()
         {
             _line = gameObject.AddComponent<TexturedLine>();
             _line.lineTexture = lineTexture;
+            _line.LineColor = lineColor;
+            _line.Volume =  ConnectionVolume;
             if (!(_node1 && _node2))
             {
                 Debug.LogError("Edge not connected to two nodes");
@@ -29,7 +33,6 @@ namespace Script.Graph
             joint2.connectedBody = _node2.gameObject.GetComponentInChildren<Rigidbody2D>();
             joint2.autoConfigureDistance = false;
             joint2.distance = (_node2.transform.position - transform.position).magnitude;
-            
         }
 
         void Update()

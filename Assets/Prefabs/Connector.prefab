@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Script.Graph.TexturedLine
   pointA: {fileID: 0}
   pointB: {fileID: 0}
+  Volume: 1
   lineTexture: {fileID: 0}
 --- !u!1 &7161196131461660757
 GameObject:
@@ -59,7 +60,6 @@ GameObject:
   - component: {fileID: 5591550638448395091}
   - component: {fileID: 4770267501263579967}
   - component: {fileID: 4366052647055708378}
-  - component: {fileID: 6028789201885182095}
   m_Layer: 0
   m_Name: Connector
   m_TagString: Untagged
@@ -97,7 +97,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Script.Graph.StandardEdge
   _node1: {fileID: 0}
   _node2: {fileID: 0}
-  lineTexture: {fileID: 2800000, guid: 9aedf434b2af025419b1e8d12d84f77d, type: 3}
+  lineTexture: {fileID: 2800000, guid: 8e18be2a8a9750e4aa5c785d50135c31, type: 3}
+  ConnectionVolume: 500
 --- !u!50 &4366052647055708378
 Rigidbody2D:
   serializedVersion: 5
@@ -125,27 +126,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!231 &6028789201885182095
-SpringJoint2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7161196131461660757}
-  m_Enabled: 1
-  serializedVersion: 4
-  m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 0}
-  m_BreakForce: Infinity
-  m_BreakTorque: Infinity
-  m_BreakAction: 3
-  m_AutoConfigureConnectedAnchor: 0
-  m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -0.03, y: 2.17}
-  m_AutoConfigureDistance: 1
-  m_Distance: 2.1702075
-  m_DampingRatio: 0
-  m_Frequency: 1
 --- !u!1 &8945605864029085026
 GameObject:
   m_ObjectHideFlags: 0
