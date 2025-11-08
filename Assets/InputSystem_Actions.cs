@@ -159,7 +159,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""Next"",
                     ""type"": ""Button"",
                     ""id"": ""b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -168,6 +168,24 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""name"": ""SelectModifier"",
                     ""type"": ""Button"",
                     ""id"": ""641cd816-40e6-41b4-8c3d-04687c349290"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Concat"",
+                    ""type"": ""Button"",
+                    ""id"": ""809a9688-6941-4dc0-a8c8-32d02b372626"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ConcatTop"",
+                    ""type"": ""Button"",
+                    ""id"": ""1b9e78a0-ee08-426e-9068-6d989ca3c75e"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -568,6 +586,50 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
                     ""action"": ""Shift"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1249b95-4411-49fe-abb2-958d4cf69c13"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Concat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cc20356a-cd42-4ea6-90ec-0fa3df251967"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Concat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""374e05ee-d1c9-4860-a51e-06e9f0d82f89"",
+                    ""path"": ""<Keyboard>/rightCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Concat"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""671a1497-bc36-4ef0-b598-2555be7a7c51"",
+                    ""path"": ""<Keyboard>/alt"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""ConcatTop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1184,6 +1246,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_Previous = m_Player.FindAction("Previous", throwIfNotFound: true);
         m_Player_Next = m_Player.FindAction("Next", throwIfNotFound: true);
         m_Player_SelectModifier = m_Player.FindAction("SelectModifier", throwIfNotFound: true);
+        m_Player_Concat = m_Player.FindAction("Concat", throwIfNotFound: true);
+        m_Player_ConcatTop = m_Player.FindAction("ConcatTop", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1287,6 +1351,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Previous;
     private readonly InputAction m_Player_Next;
     private readonly InputAction m_Player_SelectModifier;
+    private readonly InputAction m_Player_Concat;
+    private readonly InputAction m_Player_ConcatTop;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1334,6 +1400,14 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/SelectModifier".
         /// </summary>
         public InputAction @SelectModifier => m_Wrapper.m_Player_SelectModifier;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Concat".
+        /// </summary>
+        public InputAction @Concat => m_Wrapper.m_Player_Concat;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/ConcatTop".
+        /// </summary>
+        public InputAction @ConcatTop => m_Wrapper.m_Player_ConcatTop;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1387,6 +1461,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @SelectModifier.started += instance.OnSelectModifier;
             @SelectModifier.performed += instance.OnSelectModifier;
             @SelectModifier.canceled += instance.OnSelectModifier;
+            @Concat.started += instance.OnConcat;
+            @Concat.performed += instance.OnConcat;
+            @Concat.canceled += instance.OnConcat;
+            @ConcatTop.started += instance.OnConcatTop;
+            @ConcatTop.performed += instance.OnConcatTop;
+            @ConcatTop.canceled += instance.OnConcatTop;
         }
 
         /// <summary>
@@ -1425,6 +1505,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @SelectModifier.started -= instance.OnSelectModifier;
             @SelectModifier.performed -= instance.OnSelectModifier;
             @SelectModifier.canceled -= instance.OnSelectModifier;
+            @Concat.started -= instance.OnConcat;
+            @Concat.performed -= instance.OnConcat;
+            @Concat.canceled -= instance.OnConcat;
+            @ConcatTop.started -= instance.OnConcatTop;
+            @ConcatTop.performed -= instance.OnConcatTop;
+            @ConcatTop.canceled -= instance.OnConcatTop;
         }
 
         /// <summary>
@@ -1799,6 +1885,20 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSelectModifier(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Concat" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnConcat(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ConcatTop" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnConcatTop(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

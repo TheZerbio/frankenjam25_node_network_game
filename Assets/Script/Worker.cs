@@ -26,6 +26,9 @@ public class Worker : MonoBehaviour, ISelectable
     // movement 
     public float speed = 2f;
     private Vector2? _target = null;
+    private ISelectable _targetObject;
+    private List<Command> _nextCommands = new List<Command>();
+    
 
     private bool _hasAI = true;
     
@@ -33,7 +36,6 @@ public class Worker : MonoBehaviour, ISelectable
     private SpriteRenderer _renderer;
     private Rigidbody2D _rigidbody;
 
-    private ISelectable _targetObject;
     public List<Worker> attachedWorkers { get; set; } = new List<Worker>();
     private float _stoppingDistance = 0.1f;
 
@@ -57,20 +59,26 @@ public class Worker : MonoBehaviour, ISelectable
         
         // stop the motion when the target is reached
         if (_target != null && Vector2.Distance((Vector2)_target, _rigidbody.position) <= _stoppingDistance)
+        {
             _target = null;
+        }
         
         if (_target != null && _hasAI)
         {
             _stoppingDistance = 0.5f *  gameObject.GetComponent<Collider2D>().bounds.size.y;
             Vector2 applyForce = (_target?? Vector2.negativeInfinity) - _rigidbody.position;
             _rigidbody.AddForce(_force * applyForce);
+            float angle = Mathf.Atan2(applyForce.y, applyForce.x) * Mathf.Rad2Deg;
+            _rigidbody.SetRotation(Mathf.MoveTowardsAngle(_rigidbody.rotation, angle, 180* Time.deltaTime));
             _rigidbody.linearVelocity = Vector2.ClampMagnitude(_rigidbody.linearVelocity, speed);
             
         }
         else
         {
+            
             if (_hasAI)
             {
+                if (_targetObject == null) applyNextCommand();
                 _rigidbody.linearVelocity = Vector2.zero;
                 _rigidbody.angularVelocity = 0f;
             }
@@ -96,25 +104,15 @@ public class Worker : MonoBehaviour, ISelectable
     
     public void OnDeselect() => isSelected = false;
 
-    public void OnActionToVoid(Vector2 position)
-    {
-        Disconnect();
-        _target = position;
-        _targetObject =  null;
-        _stoppingDistance = 0.1f;
-    }
+    public void OnActionToVoid(Vector2 position) => registerNewCommand(position, null);
+    
 
     public GameObject getGameObject() => gameObject;
 
-    public void OnActionToElement(ISelectable element) {
-        Disconnect();
-        _targetObject = element;
-    }
-
-    public void OnClickToVoid(Vector2 position) {
-        
-        Disconnect();
-        _target = position;
+    public void OnActionToElement(ISelectable element) 
+    {
+        registerNewCommand(null, element);
+        ClickDetection.GetInstance().changeSelected(new List<ISelectable>(){this}, new List<ISelectable>(){element});
     }
    
 
@@ -181,18 +179,21 @@ public class Worker : MonoBehaviour, ISelectable
 
     private void PullNode(Node node)
     {
-        if (_targetObject == null) return;
+        if (_targetObject == null ) return;
         if ( _targetObject.getGameObject() != node.getGameObject())
-        {
-            if (_targetObject.GetElementType() == ClickableType.Lemming &&
-                !((Worker)_targetObject).getIsAttatchedToNode(node))
-                return;
-            
-            Worker coWorker = (Worker)_targetObject;
-            _hasAI = false;
-            coWorker.attachedWorkers.Add(this);
-            ClickDetection.GetInstance().changeSelected(new List<ISelectable>(){this}, new List<ISelectable>(){coWorker});
-        }
+            if (_targetObject.GetElementType() == ClickableType.Lemming)
+            {
+                Worker coWorker = (Worker)_targetObject;
+
+                if (coWorker.fractionID != fractionID  || !coWorker.getIsAttatchedToNode(node)) return;
+                
+                _hasAI = false;
+                coWorker.attachedWorkers.Add(this);
+                ClickDetection.GetInstance().changeSelected(
+                    new List<ISelectable>(){this}, new List<ISelectable>(){coWorker});
+            }
+        
+        
         FixedJoint2D joint = gameObject.AddComponent<FixedJoint2D>();
         joint.connectedBody = node.gameObject.GetComponent<Rigidbody2D>();
         joint.breakForce = math.INFINITY;
@@ -220,5 +221,36 @@ public class Worker : MonoBehaviour, ISelectable
         else foreach ( var attachedWorker in attachedWorkers){ attachedWorker.DisAttach();}
 
         _hasAI = true;
+    }
+
+    private void applyNextCommand()
+    {
+        if (_nextCommands.Count == 0)
+        {
+            _target = null;
+            _targetObject = null;
+            return;
+        }
+        
+        Disconnect();
+        Command nextCommand = _nextCommands[^1];
+        _nextCommands.RemoveAt(_nextCommands.Count - 1);
+        _target = nextCommand.targetPosition;
+        _targetObject = nextCommand.targetObject;
+    }
+
+    private void registerNewCommand(Vector2? position, ISelectable element)
+    {
+
+        bool concat = InputSystem.actions["Concat"].IsPressed(); 
+        bool concatTop = InputSystem.actions["ConcatTop"].IsPressed();
+        
+        if ( concat|| concatTop)
+            _nextCommands.Insert(concatTop ? _nextCommands.Count: 0, new Command(position, element));
+        else
+        {
+            _nextCommands = new List<Command>(){new Command(position, element)};
+            applyNextCommand();
+        }
     }
 }
