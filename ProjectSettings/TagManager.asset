@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags: []
   layers:
   - Default
@@ -41,3 +41,17 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Bottom
+    uniqueID: 2343773587
+    locked: 0
+  - name: Dashes
+    uniqueID: 672831071
+    locked: 0
+  - name: Middle
+    uniqueID: 691155025
+    locked: 0
+  - name: Top
+    uniqueID: 4228243481
+    locked: 0
+  m_RenderingLayers:
+  - Default
