@@ -7,12 +7,26 @@ using UnityEngine.UI;
 public class ClickDetection : MonoBehaviour
 {
     private List<ISelectable> _selected = new List<ISelectable>();
+    private static ClickDetection _instance;
 
     public Camera mainCamera;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+        else
+        {
+            Debug.LogWarning("Multiple instances of ClickDetection. Only use one you Doofus");
+            Destroy(gameObject);
+        }
+    }
+
+    public static ClickDetection GetInstance()
+    {
+        return _instance;
     }
 
     // Update is called once per frame
@@ -116,10 +130,23 @@ public class ClickDetection : MonoBehaviour
 
     private void UnSelectAll()
     {
-        foreach (var element in _selected)
+        lock (_selected)
         {
-            UnSelect(element);
+            List<ISelectable> safetyCopy = new List<ISelectable>(_selected);
+            foreach (var element in safetyCopy)
+            {
+                UnSelect(element);
+            }
         }
+    }
+
+    public void changeSelected(List<ISelectable> unselect, List<ISelectable> select)
+    {
+        foreach (var removal in unselect)
+            UnSelect(removal);
+        foreach (var addition in select) 
+            AddSelection(addition);
+        
     }
 
 }

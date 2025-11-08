@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Script;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,7 +12,7 @@ public class Worker : MonoBehaviour, ISelectable
     public long id;
     public ClickableType elementType { get; private set; }
     public int fractionID = 0;
-    public float force = 1f;
+    private float _force = 1f;
     
     // color change when selected 
     Color _defaultColor = Color.darkOrange;
@@ -27,8 +29,9 @@ public class Worker : MonoBehaviour, ISelectable
     private SpriteRenderer _renderer;
     private Rigidbody2D _rigidbody;
 
-    private GameObject _targetObject;
-    private List<Worker> attatchedWorkers = new List<Worker>();
+    private ISelectable _targetObject;
+    public List<Worker> attachedWorkers { get; set; } = new List<Worker>();
+    private float _stoppingDistance = 0.1f;
 
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -37,7 +40,7 @@ public class Worker : MonoBehaviour, ISelectable
         elementType = ClickableType.Lemming;
         _renderer = GetComponent<SpriteRenderer>();
         _rigidbody = GetComponent<Rigidbody2D>();
-        attatchedWorkers.Add(this);
+        attachedWorkers.Add(this);
     }
 
     // Update is called once per frame
@@ -47,17 +50,25 @@ public class Worker : MonoBehaviour, ISelectable
         _renderer.color = isSelected? _highlightColor : _defaultColor;
         
 
-        if (_targetObject) _target = _targetObject.transform.position;
+        if (_targetObject != null)  _target = _targetObject.getGameObject().transform.position;
+        
+        // stop the motion when the target is reached
+        if (Vector2.Distance(_target, _rigidbody.position) <= _stoppingDistance)
+            _target = Vector2.zero;
+        
         if (_target != Vector2.zero)
         {
+            _stoppingDistance = 0.1f;
             Vector2 applyForce = _target - _rigidbody.position;
             _rigidbody.AddForce(applyForce);
             _rigidbody.linearVelocity = Vector2.ClampMagnitude(_rigidbody.linearVelocity, speed);
             
-            if (Vector2.Distance(_target, _rigidbody.position) < 0.1f)
-                _target =Vector2.zero;
-            
-        } else _rigidbody.linearVelocity = Vector2.zero;
+        }
+        else
+        {
+            _rigidbody.linearVelocity = Vector2.zero;
+            _rigidbody.angularVelocity = 0f;
+        }
         
     }
 
@@ -67,27 +78,75 @@ public class Worker : MonoBehaviour, ISelectable
     
     public void OnDeselect() => isSelected = false;
 
-    public void OnActionToVoid(Vector2 position) => _target = position;
+    public void OnActionToVoid(Vector2 position)
+    {
+        _target = position;
+        _targetObject =  null;
+        _stoppingDistance = 0.1f;
+    }
 
     public GameObject getGameObject() => gameObject;
 
-    public void OnActionToElement(ISelectable element) => _targetObject = element.getGameObject();
+    public void OnActionToElement(ISelectable element) => _targetObject = element;
 
     public void OnClickToVoid(Vector2 position) => _target = position;
    
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        return;
-            Debug.Log(other.gameObject.name);
-            FixedJoint2D joint = gameObject.AddComponent<FixedJoint2D>();
-            joint.connectedBody = other.gameObject.GetComponent<Rigidbody2D>();
-            joint.breakForce = math.INFINITY;
-            joint.breakTorque = math.INFINITY;
+        if (_targetObject != null && other.gameObject == _targetObject.getGameObject())
+            _stoppingDistance = 2 * Vector2.Distance(transform.position, other.transform.position);
+        
+        
+        var otherSelectable = other.gameObject.GetComponent<ISelectable>();
+        if (otherSelectable == null) return;
+
+        if (otherSelectable.elementType == ClickableType.Lemming)
+        {
+            Worker coWorker = (Worker)otherSelectable;
+            if (coWorker.fractionID != fractionID)
+            {
+                Worker.Destroy(this, 500);
+                return;
+            }
+
+            if (_targetObject != null && other.gameObject == _targetObject.getGameObject())
+            {
+                coWorker.attachedWorkers.Add(this);
+                ClickDetection.GetInstance().changeSelected(new List<ISelectable>(){this}, new List<ISelectable>(){coWorker});
+            }
             
             
-            // create/merge clusters 
+        } else if (otherSelectable.elementType == ClickableType.Node)
+        {
+            Node otherNode = otherSelectable as Node;
+            PullNode(otherNode);
+        }
             
         
+    }
+
+    public float provideHelp(Worker applyer)
+    {
+        return applyer.getGameObject() == _targetObject.getGameObject() ? _force + AskForHelp() : 0;
+    }
+
+    private float AskForHelp()
+    {
+        float attachedForce = 0;
+        foreach(var helpers in attachedWorkers)
+        {
+            attachedForce += provideHelp(this);
+        }
+
+        return attachedForce;
+    }
+
+    private void PullNode(Node node)
+    {
+        FixedJoint2D joint = gameObject.AddComponent<FixedJoint2D>();
+        joint.connectedBody = node.gameObject.GetComponent<Rigidbody2D>();
+        joint.breakForce = math.INFINITY;
+        joint.breakTorque = math.INFINITY;
     }
 }
