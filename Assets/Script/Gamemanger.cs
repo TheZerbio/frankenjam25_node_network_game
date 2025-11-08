@@ -13,7 +13,7 @@ namespace Script
         
         public static int GetNextNodeId()
         {
-            return _nextNodeId++;
+            return ++_nextNodeId;
         }
         
         public static int GetNextEdgeId()
@@ -29,9 +29,10 @@ namespace Script
         
         private static GameManger _instance;
         public Color[] colors;
+        public Color[] highlightedColors;
         public GameObject nodePrefab;
         public GameObject edgePrefab;
-        public Graph.Graph[] PlayerGraphs = new Graph.Graph[2];
+        private Graph.Graph[] PlayerGraphs = new Graph.Graph[2];
         
         public static GameManger GetInstance()
         {
@@ -60,10 +61,19 @@ namespace Script
             }
         }
 
+        public bool AddNodeToPlayerGraph(Node node, int fraction)
+        {
+            if (fraction == -1)
+                return false;
+            return PlayerGraphs[fraction].AddNode(node);
+        }
+        
         public Node CreateNode(Vector3 position, int fraction)
         {
             var nodeGO = Instantiate(nodePrefab, position, Quaternion.identity);
-            var node = nodeGO.GetComponent<Node>();
+            Node node = nodeGO.GetComponent<Node>();
+            node.fractionID = fraction;
+            node.Start();
             PlayerGraphs[fraction].AddNode(node);
             return node;
         }
@@ -73,8 +83,8 @@ namespace Script
             
             if (PlayerGraphs[fraction].GetNodes().Contains(end) && PlayerGraphs[fraction].GetNodes().Contains(start))
             {
-                var edgeGO = Instantiate(nodePrefab, Vector3.zero, Quaternion.identity);
-                var edge = edgeGO.GetComponentInChildren<StandardEdge>();
+                var edgeGO = Instantiate(edgePrefab, Vector3.zero, Quaternion.identity);
+                StandardEdge edge = edgeGO.GetComponent<StandardEdge>();
                 edge.Configure(start, end);
                 foreach (Edge e  in PlayerGraphs[fraction].GetEdges())
                 {
@@ -89,12 +99,13 @@ namespace Script
         }
 
         
-        public bool BuildNodeFromNode(Node node, Vector3 position, int fraction)
+        public bool BuildNodeFromNode(Node node, Vector3 position)
         {
-            if ((node.transform.position - position).magnitude <= node.workRadius)
+            if (Vector2.Distance(node.transform.position,position) > node.workRadius)
                 return false;
-            var newNode = CreateNode(position, fraction);
-            CreateEdge(node, newNode, fraction);
+            
+            Node newNode = CreateNode(position, node.fractionID);
+            CreateEdge(node, newNode, node.fractionID);
             return true;
         }
         

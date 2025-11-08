@@ -35,7 +35,7 @@ namespace Script.Graph
 
         public bool CheckDissconect()
         {
-            return (_node1.position - _node2.position).sqrMagnitude >= _disconnectionDistance;
+            return (_node1.transform.position - _node2.transform.position).sqrMagnitude >= _disconnectionDistance;
         }
         
         public int GetId(){return _id;}

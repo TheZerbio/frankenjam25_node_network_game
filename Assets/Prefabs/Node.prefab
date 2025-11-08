@@ -75,6 +75,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 313ffe2a28c44b39add606c96c903bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Script.StandardNote
+  fractionID: -1
 --- !u!212 &5462725051979511604
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -120,7 +121,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 691155025
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -2789332053994819376, guid: d5c1a90f46adbe340b232f2782297663, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -182,6 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CircleRenderer
   lineWidth: 0.08
+  showCircles: 0
   circles:
   - radius: 15
     color: {r: 1, g: 0, b: 0, a: 1}
