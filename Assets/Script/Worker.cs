@@ -62,9 +62,9 @@ public class Worker : MonoBehaviour, IClickable
        
     }
 
-    private void OnCollisionEnter(Collision other)
+    private void OnCollisionEnter2D(Collision2D other)
     {
-            Debug.Log(other.gameObject.name);
+            Debug.Log("Collision Enter");
             FixedJoint2D joint = gameObject.AddComponent<FixedJoint2D>();
             joint.connectedBody = other.gameObject.GetComponent<Rigidbody2D>();
             joint.connectedAnchor = other.gameObject.transform.position;
