@@ -7,9 +7,9 @@ public enum ClickableType
     Node
 }
 
-public interface ISelectable
+public interface ISelectable 
 {
-    public ClickableType GetElementType();
+    public ClickableType elementType { get; }
     public void OnSelect();
     public void OnDeselect();
     public void OnActionToVoid(Vector2 position);

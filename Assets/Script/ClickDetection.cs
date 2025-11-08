@@ -8,8 +8,7 @@ public class ClickDetection : MonoBehaviour
 {
     private List<ISelectable> _selected = new List<ISelectable>();
     private static ClickDetection _instance;
-
-    public Camera mainCamera;
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
