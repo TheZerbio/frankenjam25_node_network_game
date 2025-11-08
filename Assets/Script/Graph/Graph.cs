@@ -23,9 +23,12 @@ namespace Script.Graph
             Edges.Add(edge);
         }
 
-        public void AddNode(Node node)
+        public bool AddNode(Node node)
         {
+            if (GetNodeById(node.id))
+                return false;
             Nodes.Add(node);
+            return true;
         }
 
         public Node RemoveNode(Node node)

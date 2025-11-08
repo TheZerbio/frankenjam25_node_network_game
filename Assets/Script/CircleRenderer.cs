@@ -37,6 +37,7 @@ public class MultiDashedCircles : MonoBehaviour
                 lr.loop = true;
                 lr.widthMultiplier = lineWidth;
                 lr.material = new Material(Shader.Find("Sprites/Default"));
+                lr.sortingLayerName = "Dashes";
 
                 circle.lineRenderer = lr;
             }
