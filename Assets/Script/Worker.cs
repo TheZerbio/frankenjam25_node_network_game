@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Script;
+using Script.Graph;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,6 +26,7 @@ public class Worker : MonoBehaviour, ISelectable
     
     // movement 
     public float speed = 2f;
+    private Command currentCommand = new Command(null, null);
     private Vector2? _target = null;
     private ISelectable _targetObject;
     private List<Command> _nextCommands = new List<Command>();
@@ -46,6 +48,7 @@ public class Worker : MonoBehaviour, ISelectable
         elementType = ClickableType.Lemming;
         _renderer = GetComponent<SpriteRenderer>();
         _rigidbody = GetComponent<Rigidbody2D>();
+        DisplayPathIfPossible();
     }
 
     // Update is called once per frame
@@ -251,6 +254,16 @@ public class Worker : MonoBehaviour, ISelectable
         {
             _nextCommands = new List<Command>(){new Command(position, element)};
             applyNextCommand();
+        }
+    }
+
+    private void DisplayPathIfPossible()
+    {
+        var dlrs = GetComponent<DrawDashedLineClass>();
+        if (dlrs)
+        {
+            dlrs.commands = _nextCommands;
+            dlrs.showLine = true;
         }
     }
 }
