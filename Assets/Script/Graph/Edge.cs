@@ -7,8 +7,8 @@ namespace Script.Graph
     {
         public static double MaxStrength;
         private int _id { get; } = GameManger.GetNextEdgeId();
-        private Node  _node1;
-        private Node  _node2;
+        public Node  _node1;
+        public Node  _node2;
 
         private double _disconnectionDistance {get;} = -1;
 
@@ -17,6 +17,14 @@ namespace Script.Graph
             return this._id == obj.GetId();
         }
 
+        public Edge()
+        {
+            _id = GameManger.GetNextEdgeId();
+            _node1 = null;
+            _node2 = null;
+            _disconnectionDistance = -1;
+        }
+        
         public Edge(Node _node1, Node _node2)
         {
             _id = GameManger.GetNextEdgeId();

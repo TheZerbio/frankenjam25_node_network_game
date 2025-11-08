@@ -1,9 +1,20 @@
-﻿namespace Script.Graph
+﻿using UnityEngine;
+
+namespace Script.Graph
 {
-    public class StandardEdge:Edge
+    public class StandardEdge : Edge
     {
-        public StandardEdge(Node _node1, Node _node2) : base(_node1, _node2)
+        private TexturedLine _line;
+        public Texture2D lineTexture;
+
+        void Start()
         {
+            _line = gameObject.AddComponent<TexturedLine>();
+            _line.lineTexture = lineTexture;
+            _line.pointA = _node1.transform;
+            _line.pointB = _node2.transform;
         }
+        
+        
     }
 }
