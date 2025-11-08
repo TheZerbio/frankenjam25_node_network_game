@@ -92,10 +92,13 @@ public class ClickDetection : MonoBehaviour
 
     private void onElemnentRightClick(ISelectable element)
     {
-        foreach (var selectedElement in _selected)
-        {
-            selectedElement.OnActionToElement(element);
-        }
+        
+        List<ISelectable> selectedCpy = new List<ISelectable>(_selected);
+        
+        foreach (var selectedElement in selectedCpy)
+          selectedElement.OnActionToElement(element);
+        
+        
     }
     
     private void onVoidLeftClick()
