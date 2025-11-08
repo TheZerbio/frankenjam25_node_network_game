@@ -45,6 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FogOfWar
   fogTexture: {fileID: 8400000, guid: 75791511e9761ca4e9722540b6bdcb09, type: 2}
-  units: []
   fogMaterial: {fileID: 2100000, guid: 58d0329654309a342a2b12b903bcb63c, type: 2}
   revealRadius: 5

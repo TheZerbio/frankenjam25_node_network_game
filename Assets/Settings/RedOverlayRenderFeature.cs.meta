@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 015862a74119aaa4ab214591efb179a8
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - redOverlayMaterial: {fileID: 2100000, guid: eabc26d46c8aeac438b0351efaec5ab8, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

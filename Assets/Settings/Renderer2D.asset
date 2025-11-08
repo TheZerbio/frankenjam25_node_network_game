@@ -1,5 +1,33 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8094231913935047643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 015862a74119aaa4ab214591efb179a8, type: 3}
+  m_Name: RedOverlayRenderFeature
+  m_EditorClassIdentifier: Assembly-CSharp::RedOverlayRenderFeature
+  m_Active: 0
+  redOverlayMaterial: {fileID: 2100000, guid: eabc26d46c8aeac438b0351efaec5ab8, type: 2}
+--- !u!114 &-6668236109499001721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c776575e5094d346aa3921a6e3bd967, type: 3}
+  m_Name: FogOfWarRenderFeature
+  m_EditorClassIdentifier: Assembly-CSharp::FogOfWarRenderFeature
+  m_Active: 0
+  fogMaterial: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25,8 +53,10 @@ MonoBehaviour:
     probeSamplingDebugTexture: {fileID: 2800000, guid: 24ec0e140fb444a44ab96ee80844e18e, type: 3}
     probeVolumeBlendStatesCS: {fileID: 0}
   m_RendererFeatures:
-  - {fileID: 6955133555019691974}
-  m_RendererFeatureMap: c63759501e998560
+  - {fileID: -6668236109499001721}
+  - {fileID: -8094231913935047643}
+  - {fileID: 2814630140077968777}
+  m_RendererFeatureMap: 8714e19696aa75a325744598f582ab8f898d742933930f27
   m_UseNativeRenderPass: 0
   m_LayerMask:
     serializedVersion: 2
@@ -57,7 +87,7 @@ MonoBehaviour:
   m_PostProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   m_DefaultMaterialType: 0
   m_DefaultCustomMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
---- !u!114 &6955133555019691974
+--- !u!114 &2814630140077968777
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -70,10 +100,10 @@ MonoBehaviour:
   m_Name: FullScreenPassRendererFeature
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.FullScreenPassRendererFeature
   m_Active: 1
-  injectionPoint: 550
+  injectionPoint: 600
   fetchColorBuffer: 1
   requirements: 0
-  passMaterial: {fileID: 2100000, guid: 58d0329654309a342a2b12b903bcb63c, type: 2}
+  passMaterial: {fileID: 2100000, guid: eabc26d46c8aeac438b0351efaec5ab8, type: 2}
   passIndex: 0
   bindDepthStencilAttachment: 0
   m_Version: 1
