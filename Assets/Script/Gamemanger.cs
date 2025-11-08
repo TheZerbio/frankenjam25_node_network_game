@@ -59,7 +59,7 @@ namespace Script
             }
         }
 
-        public Node CreateNode(Vector2 position, int fraction)
+        public Node CreateNode(Vector3 position, int fraction)
         {
             var nodeGO = Instantiate(nodePrefab, position, Quaternion.identity);
             var node = nodeGO.GetComponent<Node>();
@@ -87,10 +87,14 @@ namespace Script
             
         }
 
-        public void BuildNodeFromNode(Node node, Vector2 position, int fraction)
+        
+        public bool BuildNodeFromNode(Node node, Vector3 position, int fraction)
         {
+            if ((node.transform.position - position).magnitude <= node.workRadius)
+                return false;
             var newNode = CreateNode(position, fraction);
             CreateEdge(node, newNode, fraction);
+            return true;
         }
         
         
