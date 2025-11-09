@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Script;
 using Script.Graph;
 using Unity.Mathematics;
@@ -25,11 +26,8 @@ public class Worker : MonoBehaviour, ISelectable
     public bool isSelected = false;
     
     // movement 
-    public float speed = 2f;
-    private Command currentCommand = new Command(null, null);
-    private Vector2? _target = null;
-    private ISelectable _targetObject;
-    private List<Command> _nextCommands = new List<Command>();
+    public float speed = 8f;
+    public List<Command> NextCommands = new List<Command>();
     
 
     private bool _hasAI = true;
@@ -56,20 +54,18 @@ public class Worker : MonoBehaviour, ISelectable
     {
         // indicate Selection status by color
         _renderer.color = isSelected? _highlightColor : _defaultColor;
-        
 
-        if (_targetObject != null)  _target = _targetObject.getGameObject().transform.position;
-        
+        Vector2? targetPosition = GetCurrentCommand().GetTargetPosition();
         // stop the motion when the target is reached
-        if (_target != null && Vector2.Distance((Vector2)_target, _rigidbody.position) <= _stoppingDistance)
+        if (Vector2.Distance((Vector2)targetPosition, _rigidbody.position) <= _stoppingDistance)
         {
-            _target = null;
+            targetPosition = null;
         }
         
-        if (_target != null && _hasAI)
+        if (targetPosition != null && _hasAI)
         {
             _stoppingDistance = 0.5f *  gameObject.GetComponent<Collider2D>().bounds.size.y;
-            Vector2 applyForce = (_target?? Vector2.negativeInfinity) - _rigidbody.position;
+            Vector2 applyForce = GetCurrentCommand().GetTargetPosition() - _rigidbody.position;
             _rigidbody.AddForce(_force * applyForce);
             float angle = Mathf.Atan2(applyForce.y, applyForce.x) * Mathf.Rad2Deg;
             _rigidbody.SetRotation(Mathf.MoveTowardsAngle(_rigidbody.rotation, angle, 180* Time.deltaTime));
@@ -81,7 +77,7 @@ public class Worker : MonoBehaviour, ISelectable
             
             if (_hasAI)
             {
-                if (_targetObject == null) applyNextCommand();
+                if (targetPosition == null) applyNextCommand();
                 _rigidbody.linearVelocity = Vector2.zero;
                 _rigidbody.angularVelocity = 0f;
             }
@@ -90,8 +86,6 @@ public class Worker : MonoBehaviour, ISelectable
         if (isSelected && InputSystem.actions["Disconnect"].IsPressed())
         {
             DisAttach();
-
-
         }
         
     }
@@ -115,16 +109,17 @@ public class Worker : MonoBehaviour, ISelectable
     public void OnActionToElement(ISelectable element) 
     {
         registerNewCommand(null, element);
-        ClickDetection.GetInstance().changeSelected(new List<ISelectable>(){this}, new List<ISelectable>(){element});
+        if (element.GetElementType() == ClickableType.Lemming)
+            ClickDetection.GetInstance().changeSelected(
+                new List<ISelectable>(){this}, new List<ISelectable>(){element});
     }
    
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (_targetObject != null && other.gameObject == _targetObject.getGameObject())
+        Command currentCommand = GetCurrentCommand();
+        if ( other.gameObject == currentCommand.GetGameObject())
             _stoppingDistance = 1.5f * Vector2.Distance(transform.position, other.transform.position);
-        
-        
         
         var otherSelectable = other.gameObject.GetComponent<ISelectable>();
         if (otherSelectable == null) return;
@@ -138,10 +133,12 @@ public class Worker : MonoBehaviour, ISelectable
                 return;
             }
 
-            if (_targetObject != null && other.gameObject == _targetObject.getGameObject())
+            if (currentCommand.IsObject() && other.gameObject == currentCommand.targetObject.getGameObject())
             {
                 coWorker.attachedWorkers.Add(this);
-                ClickDetection.GetInstance().changeSelected(new List<ISelectable>(){this}, new List<ISelectable>(){coWorker});
+                if (isSelected)
+                    ClickDetection.GetInstance().changeSelected(
+                        new List<ISelectable>(){this}, new List<ISelectable>(){coWorker});
             }
             
             
@@ -156,7 +153,7 @@ public class Worker : MonoBehaviour, ISelectable
 
     public float provideHelp(Worker applyer)
     {
-        return applyer.getGameObject() == _targetObject.getGameObject() ? _force + AskForHelp() : 0;
+        return applyer.getGameObject() == GetCurrentCommand().GetGameObject()? _force + AskForHelp() : 0;
     }
 
     private float AskForHelp()
@@ -182,11 +179,12 @@ public class Worker : MonoBehaviour, ISelectable
 
     private void PullNode(Node node)
     {
-        if (_targetObject == null ) return;
-        if ( _targetObject.getGameObject() != node.getGameObject())
-            if (_targetObject.GetElementType() == ClickableType.Lemming)
+        Command currentCommand = GetCurrentCommand();
+        if (!currentCommand.IsObject()) return;
+        if ( currentCommand.GetGameObject() != node.getGameObject())
+            if (currentCommand.IsWorker())
             {
-                Worker coWorker = (Worker)_targetObject;
+                Worker coWorker = currentCommand.getWorker();
 
                 if (coWorker.fractionID != fractionID  || !coWorker.getIsAttatchedToNode(node)) return;
                 
@@ -201,15 +199,15 @@ public class Worker : MonoBehaviour, ISelectable
         joint.connectedBody = node.gameObject.GetComponent<Rigidbody2D>();
         joint.breakForce = math.INFINITY;
         joint.breakTorque = math.INFINITY;
-        if (_targetObject != null && _targetObject.getGameObject() != node.getGameObject()) _hasAI = false;
-        _target = null;
+        if (currentCommand.GetGameObject() != node.getGameObject()) _hasAI = false;
+        else applyNextCommand();
     }
 
-    private void Disconnect()
+    private void DisconnectFromCommander()
     {
-        if (_targetObject != null && _targetObject.GetElementType() == ClickableType.Lemming)
+        if (GetCurrentCommand().IsObject() && GetCurrentCommand().targetObject.GetElementType() == ClickableType.Lemming)
         {
-            ((Worker)_targetObject).attachedWorkers.Remove(this);
+            GetCurrentCommand().getWorker().attachedWorkers.Remove(this);
         }
     }
 
@@ -220,7 +218,7 @@ public class Worker : MonoBehaviour, ISelectable
         foreach (var joint in joints)
             Destroy(joint);
             
-        if (!hadJoints) Disconnect();
+        if (!hadJoints) DisconnectFromCommander();
         else foreach ( var attachedWorker in attachedWorkers){ attachedWorker.DisAttach();}
 
         _hasAI = true;
@@ -228,18 +226,13 @@ public class Worker : MonoBehaviour, ISelectable
 
     private void applyNextCommand()
     {
-        if (_nextCommands.Count == 0)
+        if (NextCommands.Count == 0)
         {
-            _target = null;
-            _targetObject = null;
             return;
         }
         
-        Disconnect();
-        Command nextCommand = _nextCommands[^1];
-        _nextCommands.RemoveAt(_nextCommands.Count - 1);
-        _target = nextCommand.targetPosition;
-        _targetObject = nextCommand.targetObject;
+        DisconnectFromCommander();
+        NextCommands.RemoveAt(NextCommands.Count - 1);
     }
 
     private void registerNewCommand(Vector2? position, ISelectable element)
@@ -249,21 +242,22 @@ public class Worker : MonoBehaviour, ISelectable
         bool concatTop = InputSystem.actions["ConcatTop"].IsPressed();
         
         if ( concat|| concatTop)
-            _nextCommands.Insert(concatTop ? _nextCommands.Count: 0, new Command(position, element));
+            NextCommands.Insert(concatTop ? NextCommands.Count: 0, new Command(position, element));
         else
         {
-            _nextCommands = new List<Command>(){new Command(position, element)};
-            applyNextCommand();
+            NextCommands = new List<Command>(){new Command(position, element)};
         }
     }
 
     private void DisplayPathIfPossible()
     {
-        var dlrs = GetComponent<DrawDashedLineClass>();
-        if (dlrs)
+        var pathVisualizer = GetComponent<DrawDashedLineClass>();
+        if (pathVisualizer)
         {
-            dlrs.commands = _nextCommands;
-            dlrs.showLine = true;
+            pathVisualizer.worker = this;
         }
     }
+
+    private Command GetCurrentCommand() => NextCommands.Count > 0? NextCommands[^1] :  new Command(transform.position, null);
+
 }

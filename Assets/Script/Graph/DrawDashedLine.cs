@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Script.Graph
@@ -8,8 +10,7 @@ namespace Script.Graph
         public int DashMultiplier = 1;
         public float lineWidth = 1;
         public Color lineColor = Color.white;
-        public List<Command> commands;
-        public bool showLine = true;
+        public Worker worker;
         
         private Texture2D tex;
         private LineRenderer _lineRenderer;
@@ -39,26 +40,43 @@ namespace Script.Graph
 
         private void DrawDashedLine()
         {
+            if (_lineRenderer == null) return;
+            if (!worker.isSelected)
+            {
+                _lineRenderer.gameObject.SetActive(false);
+                return;
+            }
+            
+            List<Command> commands = worker.NextCommands;
             if (commands is not { Count: > 0 }) return;
+            while (commands[0].IsWorker() 
+                   && commands[0].getWorker().fractionID == worker.fractionID 
+                   && commands[0].getWorker().NextCommands.Count > 0
+                   && commands.Count < 16)
+            {
+                commands.InsertRange(0, commands[0].getWorker().NextCommands);
+            }
             if (_lineRenderer == null) return;
 
-            _lineRenderer.positionCount = commands.Count;
+            _lineRenderer.positionCount = commands.Count + 1;
 
-            Vector3[] points = new Vector3[commands.Count];
+            Vector3[] points = new Vector3[commands.Count + 1];
             var comArray = commands.ToArray();
             
-            for (int i = commands.Count - 1; i >= 0; i--)
+            points[0] = worker.transform.position;
+
+            for (int i = 1; i <= commands.Count; i++)
             {
-                var index = (commands.Count - 1) - i;
-                points[index]= comArray[i].targetPosition ?? comArray[i].targetObject.getGameObject().transform.position;
+                points[i]= comArray[^i].GetTargetPosition();
             }
+            
             _lineRenderer.SetPositions(points);
             _lineRenderer.startColor = _lineRenderer.endColor = lineColor;
             _lineRenderer.material.color =lineColor;
             _lineRenderer.material.mainTexture = tex;
 
             // Update visibility
-            _lineRenderer.gameObject.SetActive(showLine);
+            _lineRenderer.gameObject.SetActive(worker.isSelected);
         }
         
         private Texture2D GenerateDashTexture(int dashCountMultiplier)
