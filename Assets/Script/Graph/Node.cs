@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using Script;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,7 +10,9 @@ public abstract class Node: MonoBehaviour, ISelectable
     public int id { get; private set; }
     [SerializeField] public int fractionID = -1;
     public int lemmingCapacity { get; set; } = 0;
-    public int lemmingCount { get; }
+    public int lemmingCount { get; } = 20;
+    
+    public const float LEMMING_FORCE = 0.02f;  
     
     // radia
     public float workRadius { get; set; } = 30;
@@ -17,6 +20,7 @@ public abstract class Node: MonoBehaviour, ISelectable
     public float connectionRadius { get; set; } = 25;
 
     private Rigidbody2D _rigidbody;
+    private Vector2 _restPosition;
     protected bool isSelected;
     protected Color DefaultColor;
     protected Color HighlightColor;
@@ -42,6 +46,7 @@ public abstract class Node: MonoBehaviour, ISelectable
     public virtual void Start()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
+        if (fractionID != -1) _restPosition = transform.position; // todo call whenever the fraction changes
         try
         {
             if (fractionID == -1)
@@ -68,6 +73,15 @@ public abstract class Node: MonoBehaviour, ISelectable
         SetMDCIfPresent(true);
     }
 
+    public virtual void FixedUpdate()
+    {
+        if (  fractionID != -1 && Vector2.Distance(transform.position, _restPosition) > 0.5 * connectionRadius)
+        {
+            Vector2 delta = _restPosition - (Vector2)transform.position;
+            _rigidbody.AddForce(lemmingCount * LEMMING_FORCE * delta.normalized);
+        }
+        
+    }
 
     public void OnDeselect()
     {

@@ -26,7 +26,7 @@ namespace Script
         public bool IsWorker() => IsObject() && targetObject.GetElementType() == ClickableType.Lemming;
         public Worker getWorker()
         {
-            return IsWorker()? targetObject as Worker : null;
+            return IsWorker()? targetObject.getGameObject().GetComponent<Worker>() : null;
         }
         public GameObject GetGameObject() => IsObject()?  targetObject.getGameObject() : null;
         

@@ -28,7 +28,7 @@ namespace Script
         #endregion
         
         private static GameManger _instance;
-        public Color[] colors;
+        public Color[] colors = new Color[8];
         public Color[] highlightedColors;
         public GameObject nodePrefab;
         public GameObject edgePrefab;

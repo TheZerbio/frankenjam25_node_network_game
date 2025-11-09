@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml.Schema;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Script
@@ -31,6 +32,11 @@ namespace Script
             Configure();
             base.Start();
             ConfigureMDCIfPresent();
+        }
+
+        public override void FixedUpdate()
+        {
+            base.FixedUpdate();
         }
 
         
