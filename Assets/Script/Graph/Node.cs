@@ -10,12 +10,12 @@ public abstract class Node: MonoBehaviour, ISelectable
 {
     public int id { get; private set; }
     [SerializeField] public int fractionID = -1;
-    public int lemmingCapacity { get; set; } = 30;
-    public int lemmingCount { get; set; } = 30;
+    public int lemmingCapacity { get; set; } = 40;
+    public int lemmingCount = 2;
     
     public const float LEMMING_FORCE = 0.2f;
     public const float LEMMING_SPEED = 2.75f;
-    public float regenerationRate = 0.002f;
+    public float regenerationRate = 0.02f;
     
     public List<Edge> edges { get; private set; } = new List<Edge>();
     protected int lastCount = 0;
@@ -25,9 +25,9 @@ public abstract class Node: MonoBehaviour, ISelectable
     public float visionRadius { get; set; } = 50;
     public float connectionRadius { get; set; } = 25;
 
-    private int _NodeDuplicationCost = 28;
-    private int _workerCost = 10;
-    private int _edgeCost = 15;
+    private int _NodeDuplicationCost = 15;
+    private int _workerCost = 5;
+    private int _edgeCost = 10;
     
     public GameObject workerPrefab;
     private bool _workerSpawned = false;
@@ -170,9 +170,7 @@ public abstract class Node: MonoBehaviour, ISelectable
             MDC.circles[0].radius = workRadius;
             MDC.circles[1].radius = visionRadius;
             if (this is BaseNode)
-            {
-                MDC.circles[2].radius = connectionRadius;
-            }
+                MDC.circles[0].radius = 0;
             return true;
         }
         return false;
