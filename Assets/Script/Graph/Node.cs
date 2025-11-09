@@ -4,6 +4,7 @@ using Script;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public abstract class Node: MonoBehaviour, ISelectable
 {
@@ -24,6 +25,9 @@ public abstract class Node: MonoBehaviour, ISelectable
     protected bool isSelected;
     protected Color DefaultColor;
     protected Color HighlightColor;
+
+    [SerializeField]
+    private TextMeshProUGUI counter;
 
     protected Node(
         int lemmingCapacity,
@@ -64,13 +68,16 @@ public abstract class Node: MonoBehaviour, ISelectable
             Debug.LogError("Node.cs: No Color set for this factionID: "+e);
         }
         GameManger.GetInstance().AddNodeToPlayerGraph(this,fractionID);
-        
+        counter.gameObject.SetActive(false);
     }
     
     public void OnSelect()
     {
         isSelected = true;
         SetMDCIfPresent(true);
+
+        if (counter != null)
+            counter.gameObject.SetActive(true);
     }
 
     public virtual void FixedUpdate()
@@ -80,13 +87,18 @@ public abstract class Node: MonoBehaviour, ISelectable
             Vector2 delta = _restPosition - (Vector2)transform.position;
             _rigidbody.AddForce(lemmingCount * LEMMING_FORCE * delta.normalized);
         }
-        
+        counter.text =
+            $@"{lemmingCount}/{lemmingCapacity}";
     }
 
     public void OnDeselect()
     {
         isSelected = false;
         SetMDCIfPresent(false);
+
+        // Hide the text
+        if (counter != null)
+            counter.gameObject.SetActive(false);
     }
 
     public void OnActionToVoid(Vector2 position)
