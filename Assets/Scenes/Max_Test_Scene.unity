@@ -256,6 +256,10 @@ PrefabInstance:
       propertyPath: fractionID
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3082853995443959724, guid: 46098bb6d91ada147a078e58c9c775f8, type: 3}
+      propertyPath: starterConnection
+      value: 
+      objectReference: {fileID: 1358323023}
     - target: {fileID: 4019678996815786270, guid: 46098bb6d91ada147a078e58c9c775f8, type: 3}
       propertyPath: m_Name
       value: MainNode
@@ -570,7 +574,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4720482898451495784, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
       propertyPath: fractionID
-      value: 0
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 6238769552996276935, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
       propertyPath: m_LocalPosition.x
