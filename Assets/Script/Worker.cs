@@ -133,12 +133,16 @@ public class Worker : MonoBehaviour, ISelectable
                 return;
             }
 
-            if (currentCommand.IsObject() && other.gameObject == currentCommand.targetObject.getGameObject())
+            if (currentCommand.IsObject() && other.gameObject == currentCommand.GetGameObject())
             {
                 coWorker.attachedWorkers.Add(this);
                 if (isSelected)
-                    ClickDetection.GetInstance().changeSelected(
-                        new List<ISelectable>(){this}, new List<ISelectable>(){coWorker});
+                {
+                    ClickDetection selectionManager = ClickDetection.GetInstance();
+                    selectionManager.changeSelected(
+                        new List<ISelectable>(){gameObject.GetComponent<ISelectable>()}, new List<ISelectable>(){coWorker});
+                    
+                }
             }
             
             

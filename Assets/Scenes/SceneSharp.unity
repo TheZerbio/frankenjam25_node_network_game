@@ -129,11 +129,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1410610137308207318, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -79
+      value: 12.6
       objectReference: {fileID: 0}
     - target: {fileID: 1410610137308207318, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -76.1
+      value: -22.8
       objectReference: {fileID: 0}
     - target: {fileID: 1410610137308207318, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -199,7 +199,7 @@ MonoBehaviour:
   DashMultiplier: 20
   lineWidth: 1
   lineColor: {r: 1, g: 1, b: 1, a: 1}
-  showLine: 1
+  worker: {fileID: 0}
 --- !u!1001 &412477514
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -341,7 +341,7 @@ MonoBehaviour:
   DashMultiplier: 20
   lineWidth: 1
   lineColor: {r: 1, g: 1, b: 1, a: 1}
-  showLine: 1
+  worker: {fileID: 0}
 --- !u!1001 &1207017645
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -353,6 +353,10 @@ PrefabInstance:
     - target: {fileID: 4019678996815786270, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
       propertyPath: m_Name
       value: Node
+      objectReference: {fileID: 0}
+    - target: {fileID: 4720482898451495784, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
+      propertyPath: fractionID
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6238769552996276935, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -536,14 +540,14 @@ MonoBehaviour:
   DashMultiplier: 20
   lineWidth: 1
   lineColor: {r: 1, g: 1, b: 1, a: 1}
-  showLine: 1
+  worker: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1888602017}
+  - {fileID: 547210079}
   - {fileID: 1207017645}
   - {fileID: 163057150}
   - {fileID: 1298530379}
   - {fileID: 412477514}
-  - {fileID: 547210079}
