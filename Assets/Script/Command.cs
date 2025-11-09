@@ -16,5 +16,20 @@ namespace Script
             this.targetPosition = targetposition;
             this.targetObject = targetobject;
         }
+
+        public Vector2 GetTargetPosition()
+        {
+            return targetPosition ?? targetObject.getGameObject().transform.position;
+        }
+        
+        public bool IsObject() => targetObject != null;
+        public bool IsWorker() => IsObject() && targetObject.GetElementType() == ClickableType.Lemming;
+        public Worker getWorker()
+        {
+            return IsWorker()? targetObject as Worker : null;
+        }
+        public GameObject GetGameObject() => IsObject()?  targetObject.getGameObject() : null;
+        
+        
     }
 }

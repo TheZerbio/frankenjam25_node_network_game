@@ -177,29 +177,8 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2001484209}
+      addedObject: {fileID: 1887078484}
   m_SourcePrefab: {fileID: 100100000, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
---- !u!1 &370263487 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
-  m_PrefabInstance: {fileID: 412477514}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &370263493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 370263487}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2fa46a1b2774376a9a920053e4892ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Script.Graph.DrawDashedLineClass
-  DashMultiplier: 20
-  lineWidth: 1
-  lineColor: {r: 1, g: 1, b: 1, a: 1}
-  showLine: 1
 --- !u!1001 &412477514
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -259,10 +238,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 370263493}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
 --- !u!1001 &547210079
 PrefabInstance:
@@ -321,27 +297,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e1d71c239346e94ca7ecc7239dab573, type: 3}
---- !u!1 &721601327 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
-  m_PrefabInstance: {fileID: 1298530379}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &721601333
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 721601327}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2fa46a1b2774376a9a920053e4892ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Script.Graph.DrawDashedLineClass
-  DashMultiplier: 20
-  lineWidth: 1
-  lineColor: {r: 1, g: 1, b: 1, a: 1}
-  showLine: 1
 --- !u!1001 &1207017645
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -454,11 +409,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 721601333}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
+--- !u!1 &1887078478 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
+  m_PrefabInstance: {fileID: 163057150}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1887078484
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1887078478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2fa46a1b2774376a9a920053e4892ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Script.Graph.DrawDashedLineClass
+  DashMultiplier: 10
+  lineWidth: 1
+  lineColor: {r: 1, g: 1, b: 1, a: 1}
+  showLine: 1
 --- !u!1001 &1888602017
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -516,27 +489,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 62f346aad866b304f9ec7dcdbacd45c8, type: 3}
---- !u!1 &2001484203 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
-  m_PrefabInstance: {fileID: 163057150}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2001484209
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2001484203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2fa46a1b2774376a9a920053e4892ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Script.Graph.DrawDashedLineClass
-  DashMultiplier: 20
-  lineWidth: 1
-  lineColor: {r: 1, g: 1, b: 1, a: 1}
-  showLine: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
