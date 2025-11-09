@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using Script.Graph;
 using UnityEngine;
 
@@ -78,26 +78,48 @@ namespace Script
             return node;
         }
 
-        public void CreateEdge(Node start, Node end, int fraction)
+        public bool CreateEdge(Node start, Node end, int fraction)
         {
             
-            if (PlayerGraphs[fraction].GetNodes().Contains(end) && PlayerGraphs[fraction].GetNodes().Contains(start))
+            if (start.fractionID == end.fractionID || start.fractionID == -1 && end.fractionID != -1 || end.fractionID == -1 && start.fractionID != -1) //Allow connections beween the same faction and Factionless nodes
             {
                 var edgeGO = Instantiate(edgePrefab, Vector3.zero, Quaternion.identity);
                 StandardEdge edge = edgeGO.GetComponent<StandardEdge>();
                 edge.Configure(start, end);
-                foreach (Edge e  in PlayerGraphs[fraction].GetEdges())
+                if (start.fractionID == -1)
+                {
+                    start.fractionID = end.fractionID;
+                    PlayerGraphs[end.fractionID].AddNode(start);
+                }
+
+                if (end.fractionID == -1)
+                {
+                    end.fractionID = start.fractionID;
+                    PlayerGraphs[start.fractionID].AddNode(end);
+                }
+                foreach (Edge e  in start.edges.Union(end.edges))
                 {
                     if (e.Equals(edge))
                     {
                         Debug.Log("Edge already exists, skipping");
                     }
                 }
-                PlayerGraphs[fraction].AddEdge(edge);
+                start.edges.Add(edge);
+                end.edges.Add(edge);
+                return true;
             }
+            return false;
             
         }
 
+        public void DestroyEdge(Edge edge)
+        {
+            if(edge._node1)
+                edge._node1.edges.Remove(edge);
+            if(edge._node2)
+                edge._node2.edges.Remove(edge);
+            Destroy(edge.gameObject);
+        }
         
         public bool BuildNodeFromNode(Node node, Vector3 position)
         {

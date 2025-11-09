@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Script.Graph
@@ -10,8 +12,6 @@ namespace Script.Graph
         public Node  _node1;
         public Node  _node2;
 
-        private double _disconnectionDistance {get;} = -1;
-
         public bool Equals(Edge obj)
         {
             return (_node1 == obj._node1 && _node2 == obj._node2) || (_node1 == obj._node2 && _node2 == obj._node1);
@@ -22,22 +22,37 @@ namespace Script.Graph
             _id = GameManger.GetNextEdgeId();
             _node1 = null;
             _node2 = null;
-            _disconnectionDistance = -1;
         }
-        
-        public Edge(Node _node1, Node _node2)
+
+        public virtual void Start()
         {
-            _id = GameManger.GetNextEdgeId();
-            this._node1 = _node1;
-            this._node2 = _node2;
-            _disconnectionDistance = Math.Min(this._node1.workRadius, this._node2.workRadius);
+            
+        }
+
+        public virtual void Update()
+        {
+            if(CheckDissconect())
+                GameManger.GetInstance().DestroyEdge(this);
         }
 
         public bool CheckDissconect()
         {
-            return (_node1.transform.position - _node2.transform.position).sqrMagnitude >= _disconnectionDistance;
+            return Vector2.Distance(_node1.transform.position,_node2.transform.position) > GetDissconectDistance();
         }
         
         public int GetId(){return _id;}
+
+        public Node GetOtherNode(Node self)
+        {
+            if (self == _node1) return _node2;
+            if (self == _node2) return _node1;
+            return null;
+        }
+
+        public float GetDissconectDistance()
+        {
+            return Math.Min(this._node1.workRadius, this._node2.workRadius);
+        }
+        
     }
 }
