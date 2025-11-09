@@ -8,6 +8,8 @@ namespace Script.Graph
         public Texture2D lineTexture;
         public Color lineColor = Color.black;
         public float ConnectionVolume = 1000f;
+        public float breakforce = 100;
+        public float freq = 100;
 
         public override void Start()
         {
@@ -30,10 +32,14 @@ namespace Script.Graph
             joint1.connectedBody = _node1.gameObject.GetComponentInChildren<Rigidbody2D>();
             joint1.autoConfigureDistance = false;
             joint1.distance = (_node2.transform.position - transform.position).magnitude;
+            joint1.breakForce = breakforce;
+            joint1.frequency = freq;
             var joint2 =  gameObject.AddComponent<SpringJoint2D>();
             joint2.connectedBody = _node2.gameObject.GetComponentInChildren<Rigidbody2D>();
             joint2.autoConfigureDistance = false;
             joint2.distance = (_node2.transform.position - transform.position).magnitude;
+            joint2.breakForce = breakforce;
+            joint2.frequency = freq;
         }
 
         public override void Update()

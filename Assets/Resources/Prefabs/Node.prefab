@@ -179,7 +179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Script.StandardNote
   fractionID: -1
-  lemmingCount: 30
+  lemmingCount: 5
   regenerationRate: 0.02
   workerPrefab: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
   counter: {fileID: 5585320443634432214}

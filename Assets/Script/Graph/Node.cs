@@ -14,9 +14,9 @@ public abstract class Node : MonoBehaviour, ISelectable
     public int fractionID = -1;
 
     public int lemmingCapacity { get; set; } = 40;
-    public int lemmingCount = 30;
+    public int lemmingCount = 5;
     
-    public const float LEMMING_FORCE = 0.2f;
+    public const float LEMMING_FORCE = 30f;
     public const float LEMMING_SPEED = 2.75f;
     public float regenerationRate = 0.02f;
     
