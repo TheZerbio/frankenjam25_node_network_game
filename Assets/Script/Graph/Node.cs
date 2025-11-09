@@ -1,15 +1,18 @@
-using System;
-using System.Collections.Generic;
 using Script;
 using Script.Graph;
+using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Random = UnityEngine.Random;
 
-public abstract class Node: MonoBehaviour, ISelectable
+public abstract class Node : MonoBehaviour, ISelectable
 {
     public int id { get; private set; }
-    [SerializeField] public int fractionID = -1;
+
+    [SerializeField]
+    public int fractionID = -1;
+
     public int lemmingCapacity { get; set; } = 40;
     public int lemmingCount = 30;
     
@@ -25,9 +28,9 @@ public abstract class Node: MonoBehaviour, ISelectable
     public float visionRadius { get; set; } = 50;
     public float connectionRadius { get; set; } = 25;
 
-    private int _NodeDuplicationCost = 15;
-    private int _workerCost = 5;
-    private int _edgeCost = 10;
+    internal int _NodeDuplicationCost = 28;
+    internal int _workerCost = 10;
+    internal int _edgeCost = 15;
     
     public GameObject workerPrefab;
     private bool _workerSpawned = false;
@@ -38,15 +41,18 @@ public abstract class Node: MonoBehaviour, ISelectable
     protected Color DefaultColor;
     protected Color HighlightColor;
 
+    [SerializeField]
+    internal TextMeshProUGUI counter;
+
     protected Node(
         int lemmingCapacity,
-        float workRadius, 
+        float workRadius,
         float visionRadius,
-        float connectionRadius) 
+        float connectionRadius)
     {
         id = GameManger.GetNextNodeId();
         this.lemmingCapacity = lemmingCapacity;
-        this.visionRadius = visionRadius;   
+        this.visionRadius = visionRadius;
         this.connectionRadius = connectionRadius;
         this.workRadius = workRadius;
     }
@@ -58,20 +64,21 @@ public abstract class Node: MonoBehaviour, ISelectable
     {
         return ClickableType.Node;
     }
-    
+
     public virtual void Start()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         if (fractionID != -1) _restPosition = transform.position; // todo call whenever the fraction changes
-        
-        GameManger.GetInstance().AddNodeToPlayerGraph(this,fractionID);
-        
+
+        GameManger.GetInstance().AddNodeToPlayerGraph(this, fractionID);
+        counter.gameObject.SetActive(false);
     }
-    
-    public void OnSelect()
+
+    public virtual void OnSelect()
     {
         isSelected = true;
         SetMDCIfPresent(true);
+        counter.gameObject.SetActive(true);
     }
 
     public virtual void Update()
@@ -82,27 +89,26 @@ public abstract class Node: MonoBehaviour, ISelectable
     public virtual void FixedUpdate()
     {
         RegeneratePopulation();
-        if (  fractionID != -1 && Vector2.Distance(transform.position, _restPosition) > 0.5 * connectionRadius)
+        if (fractionID != -1 && Vector2.Distance(transform.position, _restPosition) > 0.5 * connectionRadius)
         {
             float managerBonus = isSelected ? 1.1f : 0.8f;
             Vector2 delta = _restPosition - (Vector2)transform.position;
             _rigidbody.AddForce(lemmingCount * LEMMING_FORCE * managerBonus * delta.normalized);
         }
 
-        if (isSelected && InputSystem.actions["Spawn"].IsPressed() )
+        if (isSelected && InputSystem.actions["Spawn"].IsPressed())
         {
             if (!_workerSpawned) SpawnWorker();
             _workerSpawned = true;
         }
         else _workerSpawned = false;
-
-
     }
 
-    public void OnDeselect()
+    public virtual void OnDeselect()
     {
         isSelected = false;
         SetMDCIfPresent(false);
+        counter.gameObject.SetActive(false);
     }
 
     public void OnActionToVoid(Vector2 position)
@@ -120,7 +126,7 @@ public abstract class Node: MonoBehaviour, ISelectable
             lemmingCount -= _NodeDuplicationCost+_edgeCost;
             
             GameManger manager = GameManger.GetInstance();
-            manager.BuildNodeFromNode(this,position);
+            manager.BuildNodeFromNode(this, position);
         }
     }
 
@@ -152,14 +158,14 @@ public abstract class Node: MonoBehaviour, ISelectable
         }
     }
 
-    public GameObject getGameObject() =>  gameObject;
+    public GameObject getGameObject() => gameObject;
 
     public void SetMDCIfPresent(bool newStatus)
     {
         var MDC = GetComponent<MultiDashedCircles>();
         if (!MDC)
         {
-            Debug.Log("Node "+id+" doesn't have MDC component");
+            Debug.Log("Node " + id + " doesn't have MDC component");
             return;
         }
         MDC.SetCirclesVisible(newStatus);
@@ -192,10 +198,10 @@ public abstract class Node: MonoBehaviour, ISelectable
             DefaultColor = GameManger.GetInstance().colors[fractionID];
             HighlightColor = GameManger.GetInstance().highlightedColors[fractionID];
         }
-        catch (IndexOutOfRangeException e)  
+        catch (IndexOutOfRangeException e)
         {
-            
-            Debug.LogError("Node.cs: No Color set for this factionID: "+e);
+
+            Debug.LogError("Node.cs: No Color set for this factionID: " + e);
         }
     }
 
@@ -214,9 +220,9 @@ public abstract class Node: MonoBehaviour, ISelectable
 
     private void RegeneratePopulation()
     {
-        if (fractionID == -1) { return;}
-        int lemmingIncrease = (Random.Range(0f, 1f) <= (lemmingCount* 0.7f) / (float)lemmingCapacity * regenerationRate 
-            + 0.001 * regenerationRate)? 1 : 0;
+        if (fractionID == -1) { return; }
+        int lemmingIncrease = (UnityEngine.Random.Range(0f, 1f) <= (lemmingCount * 0.7f) / (float)lemmingCapacity * regenerationRate
+            + 0.001 * regenerationRate) ? 1 : 0;
         lemmingCount = Math.Min(lemmingCount + lemmingIncrease, lemmingCapacity);
     }
 
@@ -256,7 +262,7 @@ public abstract class Node: MonoBehaviour, ISelectable
         worker.HighlightColor = HighlightColor;
 
     }
-    
+
     public bool IsConnectedToBaseNode()
     {
         var visited = new HashSet<Node>();

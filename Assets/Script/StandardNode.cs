@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml.Schema;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -47,6 +48,11 @@ namespace Script
                     PropagateFractioID();
                 }
             }
+            counter.text =
+$@"Nauts: {lemmingCount}/{lemmingCapacity}
+Atttacker Cost: {_workerCost}
+Edge Cost: {_edgeCost}
+Node Cost: {_NodeDuplicationCost}";
         }
 
         public override void OnCollisionEnter2D(Collision2D other)
