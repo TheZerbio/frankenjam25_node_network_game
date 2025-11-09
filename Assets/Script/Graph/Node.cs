@@ -26,6 +26,7 @@ public abstract class Node: MonoBehaviour, ISelectable
 
     private int _NodeDuplicationCost = 28;
     private int _workerCost = 10;
+    private int _edgeCost = 15;
     
     public GameObject workerPrefab;
     private bool _workerSpawned = false;
@@ -124,6 +125,13 @@ public abstract class Node: MonoBehaviour, ISelectable
     {
         if (element is Node)
         {
+            if (lemmingCount < _edgeCost)
+            {
+                // todo Anti Edgy User message
+                return;
+            }
+
+            lemmingCount -= _edgeCost;
             var other = (Node)element;
             if (Vector2.Distance(transform.position, other.transform.position) <= workRadius)
                 if (!GameManger.GetInstance().CreateEdge(this, other, fractionID))
