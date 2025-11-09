@@ -43,6 +43,7 @@ public class Worker : MonoBehaviour, ISelectable
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        RefreshColours();
         elementType = ClickableType.Lemming;
         _renderer = GetComponent<SpriteRenderer>();
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -266,5 +267,25 @@ public class Worker : MonoBehaviour, ISelectable
     }
 
     private Command GetCurrentCommand() => NextCommands.Count > 0? NextCommands[^1] :  new Command(transform.position, null);
+    
+    protected void RefreshColours()
+    {
+        try
+        {
+            if (fractionID == -1)
+            {
+                DefaultColor = Color.white;
+                HighlightColor = Color.lightGray;
+                return;
+            }
+            DefaultColor = GameManger.GetInstance().colors[fractionID];
+            HighlightColor = GameManger.GetInstance().highlightedColors[fractionID];
+        }
+        catch (IndexOutOfRangeException e)  
+        {
+            
+            Debug.LogError("Node.cs: No Color set for this factionID: "+e);
+        }
+    }
 
 }

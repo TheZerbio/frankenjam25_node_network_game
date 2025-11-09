@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem; // New Input System
 
@@ -25,14 +26,28 @@ public class CameraGrabPanWithBoundsGizmo : MonoBehaviour
     [Tooltip("Maximum world X and Y position the camera center can reach.")]
     public Vector2 maxBounds = new Vector2(20f, 20f);
 
+    [Header("Level Generation")] 
+    public Texture2D Background = null;
+    public Color lineColor = Color.white;
+    public float TextureScaleFactor = 1f;
+    
     [Header("Debug")]
     [Tooltip("Draws the camera bounds rectangle in the Scene view.")]
     public Color boundsColor = Color.yellow;
 
+    
+    
     private Camera cam;
     private bool isPanning = false;
     private Vector3 panOriginWorld;
 
+    public void Start()
+    {
+        if (!Background)
+            Background = Texture2D.grayTexture;
+        GenerateBoundaryColliders();
+        CreateTiledBackground(Background,TextureScaleFactor);
+    }
     private void Awake()
     {
         cam = GetComponent<Camera>();
@@ -112,4 +127,93 @@ public class CameraGrabPanWithBoundsGizmo : MonoBehaviour
         Gizmos.DrawLine(topRight, topLeft);
         Gizmos.DrawLine(topLeft, bottomLeft);
     }
+    
+    #region LevelGen
+    //Level Bounds
+    private void GenerateBoundaryColliders()
+    {
+        float thickness = 1f; // how thick the boundary walls are
+        float minX = minBounds.x;
+        float maxX = maxBounds.x;
+        float minY = minBounds.y;
+        float maxY = maxBounds.y;
+
+        // Create a parent object to keep things organized
+        GameObject boundaryParent = new GameObject("CameraBoundaries");
+        boundaryParent.transform.SetParent(transform);
+
+        // Bottom
+        CreateBoundaryCollider(boundaryParent.transform, new Vector2((minX + maxX) / 2f, minY - thickness / 2f),
+            new Vector2(maxX - minX, thickness));
+
+        // Top
+        CreateBoundaryCollider(boundaryParent.transform, new Vector2((minX + maxX) / 2f, maxY + thickness / 2f),
+            new Vector2(maxX - minX, thickness));
+
+        // Left
+        CreateBoundaryCollider(boundaryParent.transform, new Vector2(minX - thickness / 2f, (minY + maxY) / 2f),
+            new Vector2(thickness, maxY - minY));
+
+        // Right
+        CreateBoundaryCollider(boundaryParent.transform, new Vector2(maxX + thickness / 2f, (minY + maxY) / 2f),
+            new Vector2(thickness, maxY - minY));
+    }
+
+    private void CreateBoundaryCollider(Transform parent, Vector2 position, Vector2 size)
+    {
+        GameObject obj = new GameObject("BoundaryCollider");
+        obj.transform.SetParent(parent);
+        obj.transform.position = position;
+
+        BoxCollider2D col = obj.AddComponent<BoxCollider2D>();
+        col.size = size;
+        col.isTrigger = false;
+    }
+    
+    // Background
+    private void CreateTiledBackground(Texture2D texture, float tileWorldSize = 5f)
+    {
+        if (texture == null)
+        {
+            Debug.LogWarning("CreateTiledBackground: Texture is null!");
+            return;
+        }
+
+        // Ensure texture can tile
+        texture.wrapMode = TextureWrapMode.Repeat;
+
+        // Create a material that supports texture tiling
+        Material mat = new Material(Shader.Find("Sprites/Default"));
+        mat.mainTexture = texture;
+        mat.color = lineColor;
+
+        // Create a new GameObject for the background
+        GameObject bg = new GameObject("TiledBackground");
+        bg.transform.position = new Vector3(
+            (minBounds.x + maxBounds.x) / 2f,
+            (minBounds.y + maxBounds.y) / 2f,
+            10f // behind everything
+        );
+
+        // Add SpriteRenderer
+        SpriteRenderer sr = bg.AddComponent<SpriteRenderer>();
+        sr.sharedMaterial = mat;
+        sr.drawMode = SpriteDrawMode.Tiled;
+
+        // Convert texture into sprite
+        Sprite sprite = Sprite.Create(
+            texture,
+            new Rect(0, 0, texture.width, texture.height),
+            new Vector2(0.5f, 0.5f),
+            texture.width / tileWorldSize // pixels per unit so tiles appear with chosen world size
+        );
+        sr.sprite = sprite;
+
+        // Set the size of the tiled area
+        sr.size = new Vector2(maxBounds.x - minBounds.x, maxBounds.y - minBounds.y);
+    }
+
+
+
+    #endregion
 }

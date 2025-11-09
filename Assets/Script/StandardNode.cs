@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml.Schema;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace Script
 {
     public class StandardNode : Node
     {
-        const int CAPACITY = 20; 
+        const int CAPACITY = 40; 
         const float WORK_RADIUS = 80f;
         const float VISION_RADIUS = 100f;
         const float CONNECTION_RADIUS = 40f;
@@ -47,6 +48,11 @@ namespace Script
                     PropagateFractioID();
                 }
             }
+            counter.text =
+$@"Nauts: {lemmingCount}/{lemmingCapacity}
+Atttacker Cost: {_workerCost}
+Edge Cost: {_edgeCost}
+Node Cost: {_NodeDuplicationCost}";
         }
 
         public override void OnCollisionEnter2D(Collision2D other)
