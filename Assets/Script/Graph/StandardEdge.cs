@@ -54,8 +54,10 @@ namespace Script.Graph
             _node2 = end;
             MoveBetweenNodes();
         }
-        
-        
-        
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
     }
 }

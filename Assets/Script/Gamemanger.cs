@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Script.Graph;
 using UnityEngine;
 
@@ -33,13 +34,30 @@ namespace Script
         public GameObject nodePrefab;
         public GameObject edgePrefab;
         private Graph.Graph[] PlayerGraphs = new Graph.Graph[2];
-        public int CurrentPlayer { get;  }= 0 ;
+        public int CurrentPlayer = 0 ;
         
         public static GameManger GetInstance()
         {
             if (_instance == null)
             {
                 Debug.LogError("GameManger not found, Make Sure you have one in our Scene");
+                Debug.LogError("Instatiating new GameManger");
+                try
+                {
+                    GameObject prefab = Resources.Load<GameObject>("Prefabs/GameManager");
+                    if (prefab != null)
+                    {
+                        Instantiate(prefab, Vector3.zero, Quaternion.identity);
+                    }
+                    else
+                    {
+                        Debug.LogError("GameManager prefab not found!");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("GameManager prefab could not be loaded:" + e.Message);
+                }
                 return null;
             }
             return _instance;
@@ -107,6 +125,7 @@ namespace Script
                 }
                 start.edges.Add(edge);
                 end.edges.Add(edge);
+                Debug.Log("Edge created between "+start.gameObject.name+" and "+end.gameObject.name);
                 return true;
             }
             return false;
@@ -115,11 +134,14 @@ namespace Script
 
         public void DestroyEdge(Edge edge)
         {
-            if(edge._node1)
-                edge._node1.edges.Remove(edge);
-            if(edge._node2)
-                edge._node2.edges.Remove(edge);
-            Destroy(edge.gameObject);
+            if (edge)
+            {
+                if(edge._node1)
+                    edge._node1.edges.Remove(edge);
+                if(edge._node2)
+                    edge._node2.edges.Remove(edge);
+                Destroy(edge.gameObject);
+            }
         }
         
         public bool BuildNodeFromNode(Node node, Vector3 position)

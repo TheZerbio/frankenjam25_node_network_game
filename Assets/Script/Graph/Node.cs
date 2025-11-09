@@ -18,6 +18,7 @@ public abstract class Node: MonoBehaviour, ISelectable
     public float regenerationRate = 0.002f;
     
     public List<Edge> edges { get; private set; } = new List<Edge>();
+    protected int lastCount = 0;
     
     // radia
     public float workRadius { get; set; } = 30;
@@ -134,8 +135,17 @@ public abstract class Node: MonoBehaviour, ISelectable
             lemmingCount -= _edgeCost;
             var other = (Node)element;
             if (Vector2.Distance(transform.position, other.transform.position) <= workRadius)
+            {
+                if (other.fractionID == -1)
+                {
+                    other.fractionID = fractionID;
+                    other.PropagateFractioID();
+                }
                 if (!GameManger.GetInstance().CreateEdge(this, other, fractionID))
                     Debug.Log("Could create edge because of Faction issues");
+                
+            }
+                
         }
     }
 
@@ -157,9 +167,12 @@ public abstract class Node: MonoBehaviour, ISelectable
         var MDC = GetComponent<MultiDashedCircles>();
         if (MDC)
         {
-            //MDC.circles[0].radius = connectionRadius;
             MDC.circles[0].radius = workRadius;
             MDC.circles[1].radius = visionRadius;
+            if (this is BaseNode)
+            {
+                MDC.circles[2].radius = connectionRadius;
+            }
             return true;
         }
         return false;
@@ -190,11 +203,12 @@ public abstract class Node: MonoBehaviour, ISelectable
     {
         ISelectable otherSelectable = other.collider.GetComponentInParent<ISelectable>();
         if (otherSelectable == null) return;
-        
-        if (otherSelectable.GetElementType() == GetElementType()) 
+
+        if (otherSelectable.GetElementType() == GetElementType())
+        {
+            KillAllEdges();
             Destroy(this.gameObject);
-        
-            
+        }
     }
 
     private void RegeneratePopulation()
@@ -260,6 +274,42 @@ public abstract class Node: MonoBehaviour, ISelectable
         }
 
         return false; // No BaseNode found in reachable nodes
+    }
+
+    public void PropagateFractioID()
+    {
+        var visited = new HashSet<Node>();
+        var queue = new Queue<Node>();
+        queue.Enqueue(this);
+        visited.Add(this);
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+
+            // ✅ Check if the node is a BaseNode
+            current.fractionID = fractionID;
+
+            foreach (var edge in current.edges)
+            {
+                var neighbor = edge.GetOtherNode(current);
+                if (neighbor != null && !visited.Contains(neighbor))
+                {
+                    visited.Add(neighbor);
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+    }
+    
+    void KillAllEdges()
+    {
+        var edgeArray = edges.ToArray();
+        edges = new List<Edge>();
+        for(int i = 0; i < edgeArray.Length; i++)
+        {
+            GameManger.GetInstance().DestroyEdge(edgeArray[i]);
+        }
     }
     
 }

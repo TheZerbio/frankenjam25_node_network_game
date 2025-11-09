@@ -178,6 +178,11 @@ MonoBehaviour:
     segmentCount: 64
     lineRenderer: {fileID: 0}
   - radius: 20
+    color: {r: 0.6603774, g: 0.16420637, b: 0.08410467, a: 1}
+    dashCountMultiplier: 25
+    segmentCount: 64
+    lineRenderer: {fileID: 0}
+  - radius: 20
     color: {r: 0.29636878, g: 0.29636878, b: 0.33962262, a: 1}
     dashCountMultiplier: 25
     segmentCount: 64
@@ -195,3 +200,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Script.BaseNode
   fractionID: -1
+  starterConnection: {fileID: 0}
