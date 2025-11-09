@@ -20,9 +20,11 @@ public class MultiDashedCircles : MonoBehaviour
     public float lineWidth = 0.1f;
     public bool showCircles = true; // NEW: Toggle visibility
     public List<Circle> circles = new List<Circle>();
+    private Texture2D _dashTexture;
 
     private void Awake()
     {
+        _dashTexture = GenerateDashTexture(circles[0].dashCountMultiplier);
         // Create LineRenderers for each circle
         foreach (var circle in circles)
         {
@@ -72,7 +74,7 @@ public class MultiDashedCircles : MonoBehaviour
             lr.SetPositions(points);
             lr.startColor = lr.endColor = circle.color;
             lr.material.color = circle.color;
-            lr.material.mainTexture = GenerateDashTexture(circle.dashCountMultiplier);
+            lr.material.mainTexture = _dashTexture;
             lr.material.mainTextureScale = new Vector2(circle.segmentCount / 4f * circle.dashCountMultiplier, 1);
 
             // Update visibility
