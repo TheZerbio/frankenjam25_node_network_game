@@ -10,10 +10,11 @@ public abstract class Node: MonoBehaviour, ISelectable
 {
     public int id { get; private set; }
     [SerializeField] public int fractionID = -1;
-    public int lemmingCapacity { get; set; } = 0;
-    public int lemmingCount { get; set; } = 2;
+    public int lemmingCapacity { get; set; } = 30;
+    public int lemmingCount { get; set; } = 30;
     
-    public const float LEMMING_FORCE = 0.015f;
+    public const float LEMMING_FORCE = 0.2f;
+    public const float LEMMING_SPEED = 2.75f;
     public float regenerationRate = 0.002f;
     
     public List<Edge> edges { get; private set; } = new List<Edge>();
@@ -22,6 +23,12 @@ public abstract class Node: MonoBehaviour, ISelectable
     public float workRadius { get; set; } = 30;
     public float visionRadius { get; set; } = 50;
     public float connectionRadius { get; set; } = 25;
+
+    private int _NodeDuplicationCost = 28;
+    private int _workerCost = 10;
+    
+    public GameObject workerPrefab;
+    private bool _workerSpawned = false;
 
     private Rigidbody2D _rigidbody;
     private Vector2 _restPosition;
@@ -75,10 +82,19 @@ public abstract class Node: MonoBehaviour, ISelectable
         RegeneratePopulation();
         if (  fractionID != -1 && Vector2.Distance(transform.position, _restPosition) > 0.5 * connectionRadius)
         {
+            float managerBonus = isSelected ? 1.1f : 0.8f;
             Vector2 delta = _restPosition - (Vector2)transform.position;
-            _rigidbody.AddForce(lemmingCount * LEMMING_FORCE * delta.normalized);
+            _rigidbody.AddForce(lemmingCount * LEMMING_FORCE * managerBonus * delta.normalized);
         }
-        
+
+        if (isSelected && InputSystem.actions["Spawn"].IsPressed() )
+        {
+            if (!_workerSpawned) SpawnWorker();
+            _workerSpawned = true;
+        }
+        else _workerSpawned = false;
+
+
     }
 
     public void OnDeselect()
@@ -91,6 +107,14 @@ public abstract class Node: MonoBehaviour, ISelectable
     {
         if (Vector2.Distance(position, gameObject.transform.position) < workRadius)
         {
+            if (lemmingCapacity < _NodeDuplicationCost)
+            {
+                /// todo send user a message that he hasn't enough Lemmings
+                return;
+            }
+
+            lemmingCount -= _NodeDuplicationCost;
+            
             GameManger manager = GameManger.GetInstance();
             manager.BuildNodeFromNode(this,position);
         }
@@ -146,7 +170,7 @@ public abstract class Node: MonoBehaviour, ISelectable
             DefaultColor = GameManger.GetInstance().colors[fractionID];
             HighlightColor = GameManger.GetInstance().highlightedColors[fractionID];
         }
-        catch (IndexOutOfRangeException e)
+        catch (IndexOutOfRangeException e)  
         {
             
             Debug.LogError("Node.cs: No Color set for this factionID: "+e);
@@ -168,8 +192,37 @@ public abstract class Node: MonoBehaviour, ISelectable
     private void RegeneratePopulation()
     {
         if (fractionID == -1) { return;}
-        int lemmingIncrease = (Random.Range(0f, 1f) <= (lemmingCount* 0.7f) / (float)lemmingCapacity * regenerationRate)? 1 : 0;
+        int lemmingIncrease = (Random.Range(0f, 1f) <= (lemmingCount* 0.7f) / (float)lemmingCapacity * regenerationRate 
+            + 0.001 * regenerationRate)? 1 : 0;
         lemmingCount = Math.Min(lemmingCount + lemmingIncrease, lemmingCapacity);
+    }
+
+
+    private void SpawnWorker()
+    {
+        if (lemmingCount < _workerCost)
+        {
+            /// todo scold the user because hes poor
+            return;
+        }
+
+        lemmingCount -= _workerCost;
+
+        GameObject workerGO = Instantiate(workerPrefab, transform.position, Quaternion.identity);
+        Worker worker = workerGO.GetComponent<Worker>();
+
+        if (worker == null)
+        {
+            Debug.LogError("Node.cs: Incorrect prefab assigned to create a worker");
+            return;
+        }
+
+        worker.fractionID = fractionID;
+        worker.speed = LEMMING_SPEED * _workerCost;
+        worker.force = LEMMING_FORCE * _workerCost;
+        worker.DefaultColor = DefaultColor;
+        worker.HighlightColor = HighlightColor;
+
     }
     
     public bool IsConnectedToBaseNode()

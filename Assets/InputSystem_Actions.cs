@@ -190,6 +190,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spawn"",
+                    ""type"": ""Button"",
+                    ""id"": ""29871266-7bb4-4835-bda4-ea38e81f5d1b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -630,6 +639,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""ConcatTop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3c931426-0232-4b56-822d-fc8539df13d0"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Spawn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1248,6 +1268,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_Player_SelectModifier = m_Player.FindAction("SelectModifier", throwIfNotFound: true);
         m_Player_Concat = m_Player.FindAction("Concat", throwIfNotFound: true);
         m_Player_ConcatTop = m_Player.FindAction("ConcatTop", throwIfNotFound: true);
+        m_Player_Spawn = m_Player.FindAction("Spawn", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1353,6 +1374,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SelectModifier;
     private readonly InputAction m_Player_Concat;
     private readonly InputAction m_Player_ConcatTop;
+    private readonly InputAction m_Player_Spawn;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1408,6 +1430,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/ConcatTop".
         /// </summary>
         public InputAction @ConcatTop => m_Wrapper.m_Player_ConcatTop;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/Spawn".
+        /// </summary>
+        public InputAction @Spawn => m_Wrapper.m_Player_Spawn;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1467,6 +1493,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @ConcatTop.started += instance.OnConcatTop;
             @ConcatTop.performed += instance.OnConcatTop;
             @ConcatTop.canceled += instance.OnConcatTop;
+            @Spawn.started += instance.OnSpawn;
+            @Spawn.performed += instance.OnSpawn;
+            @Spawn.canceled += instance.OnSpawn;
         }
 
         /// <summary>
@@ -1511,6 +1540,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @ConcatTop.started -= instance.OnConcatTop;
             @ConcatTop.performed -= instance.OnConcatTop;
             @ConcatTop.canceled -= instance.OnConcatTop;
+            @Spawn.started -= instance.OnSpawn;
+            @Spawn.performed -= instance.OnSpawn;
+            @Spawn.canceled -= instance.OnSpawn;
         }
 
         /// <summary>
@@ -1899,6 +1931,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnConcatTop(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Spawn" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSpawn(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

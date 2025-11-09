@@ -16,11 +16,11 @@ public class Worker : MonoBehaviour, ISelectable
     public long id;
     public ClickableType elementType { get; private set; }
     public int fractionID = 0;
-    private float _force = 1f;
+    public float force = 1f;
     
     // color change when selected 
-    Color _defaultColor = Color.darkOrange;
-    Color _highlightColor = Color.darkCyan;
+    public Color DefaultColor = Color.darkOrange;
+    public Color HighlightColor = Color.darkCyan;
     
     // selection variables 
     public bool isSelected = false;
@@ -53,7 +53,7 @@ public class Worker : MonoBehaviour, ISelectable
     void FixedUpdate()
     {
         // indicate Selection status by color
-        _renderer.color = isSelected? _highlightColor : _defaultColor;
+        _renderer.color = isSelected? HighlightColor : DefaultColor;
 
         Vector2? targetPosition = GetCurrentCommand().GetTargetPosition();
         // stop the motion when the target is reached
@@ -66,7 +66,7 @@ public class Worker : MonoBehaviour, ISelectable
         {
             _stoppingDistance = 0.5f *  gameObject.GetComponent<Collider2D>().bounds.size.y;
             Vector2 applyForce = GetCurrentCommand().GetTargetPosition() - _rigidbody.position;
-            _rigidbody.AddForce(_force * applyForce.normalized);
+            _rigidbody.AddForce(force * applyForce.normalized);
             float angle = Mathf.Atan2(applyForce.y, applyForce.x) * Mathf.Rad2Deg;
             _rigidbody.SetRotation(Mathf.MoveTowardsAngle(_rigidbody.rotation, angle, 180* Time.deltaTime));
             _rigidbody.linearVelocity = Vector2.ClampMagnitude(_rigidbody.linearVelocity, speed);
@@ -160,7 +160,7 @@ public class Worker : MonoBehaviour, ISelectable
 
     public float provideHelp(Worker applyer)
     {
-        return applyer.getGameObject() == GetCurrentCommand().GetGameObject()? _force + AskForHelp() : 0;
+        return applyer.getGameObject() == GetCurrentCommand().GetGameObject()? force + AskForHelp() : 0;
     }
 
     private float AskForHelp()

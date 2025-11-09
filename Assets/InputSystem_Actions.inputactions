@@ -104,6 +104,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Spawn",
+                    "type": "Button",
+                    "id": "29871266-7bb4-4835-bda4-ea38e81f5d1b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -544,6 +553,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "ConcatTop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3c931426-0232-4b56-822d-fc8539df13d0",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Spawn",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
