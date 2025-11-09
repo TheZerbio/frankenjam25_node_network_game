@@ -89,7 +89,13 @@ namespace Script
         
         public Node CreateNode(Vector3 position, int fraction)
         {
+            GameObject root = GameObject.Find("DynamicNodes");
+            if (root == null)
+            {
+                root = new GameObject("DynamicNodes");
+            }
             var nodeGO = Instantiate(nodePrefab, position, Quaternion.identity);
+            nodeGO.transform.SetParent(root.transform, worldPositionStays: true);
             Node node = nodeGO.GetComponent<Node>();
             node.fractionID = fraction;
             node.Start();

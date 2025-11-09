@@ -11,7 +11,7 @@ public abstract class Node: MonoBehaviour, ISelectable
     public int id { get; private set; }
     [SerializeField] public int fractionID = -1;
     public int lemmingCapacity { get; set; } = 40;
-    public int lemmingCount = 2;
+    public int lemmingCount = 30;
     
     public const float LEMMING_FORCE = 0.2f;
     public const float LEMMING_SPEED = 2.75f;
@@ -109,13 +109,15 @@ public abstract class Node: MonoBehaviour, ISelectable
     {
         if (Vector2.Distance(position, gameObject.transform.position) < workRadius)
         {
-            if (lemmingCapacity < _NodeDuplicationCost)
+            if (lemmingCount < (_NodeDuplicationCost+_edgeCost))
             {
+                Debug.Log("Can't Afford that new node there, Ey?");
                 /// todo send user a message that he hasn't enough Lemmings
                 return;
             }
 
-            lemmingCount -= _NodeDuplicationCost;
+            Debug.Log("Trying to build Node from Node");
+            lemmingCount -= _NodeDuplicationCost+_edgeCost;
             
             GameManger manager = GameManger.GetInstance();
             manager.BuildNodeFromNode(this,position);
@@ -128,6 +130,7 @@ public abstract class Node: MonoBehaviour, ISelectable
         {
             if (lemmingCount < _edgeCost)
             {
+                Debug.Log("Imagine being too poor to build an edge... couldn't be me.");
                 // todo Anti Edgy User message
                 return;
             }
@@ -222,13 +225,22 @@ public abstract class Node: MonoBehaviour, ISelectable
     {
         if (lemmingCount < _workerCost)
         {
+            Debug.Log("No more money for Workers!");
             /// todo scold the user because hes poor
             return;
         }
 
         lemmingCount -= _workerCost;
 
+        GameObject root = GameObject.Find("Workers");
+        if (root == null)
+        {
+            root = new GameObject("Workers");
+        }
+        
+        
         GameObject workerGO = Instantiate(workerPrefab, transform.position, Quaternion.identity);
+        workerGO.transform.SetParent(root.transform, worldPositionStays: true);
         Worker worker = workerGO.GetComponent<Worker>();
 
         if (worker == null)

@@ -7,7 +7,7 @@ namespace Script
 {
     public class StandardNode : Node
     {
-        const int CAPACITY = 20; 
+        const int CAPACITY = 40; 
         const float WORK_RADIUS = 80f;
         const float VISION_RADIUS = 100f;
         const float CONNECTION_RADIUS = 40f;

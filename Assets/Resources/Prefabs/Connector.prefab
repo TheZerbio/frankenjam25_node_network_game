@@ -100,7 +100,7 @@ MonoBehaviour:
   _node2: {fileID: 0}
   lineTexture: {fileID: 2800000, guid: 8e18be2a8a9750e4aa5c785d50135c31, type: 3}
   lineColor: {r: 0, g: 0, b: 0, a: 1}
-  ConnectionVolume: 250
+  ConnectionVolume: 150
 --- !u!50 &4366052647055708378
 Rigidbody2D:
   serializedVersion: 5
