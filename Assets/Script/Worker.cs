@@ -26,7 +26,7 @@ public class Worker : MonoBehaviour, ISelectable
     public bool isSelected = false;
     
     // movement 
-    public float speed = 8f;
+    public float speed = 16f;
     public List<Command> NextCommands = new List<Command>();
     
 
@@ -50,7 +50,7 @@ public class Worker : MonoBehaviour, ISelectable
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         // indicate Selection status by color
         _renderer.color = isSelected? _highlightColor : _defaultColor;
