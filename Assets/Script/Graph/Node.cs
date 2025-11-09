@@ -10,8 +10,8 @@ public abstract class Node: MonoBehaviour, ISelectable
 {
     public int id { get; private set; }
     [SerializeField] public int fractionID = -1;
-    public int lemmingCapacity { get; set; } = 30;
-    public int lemmingCount { get; set; } = 30;
+    public int lemmingCapacity { get; set; } = 40;
+    public int lemmingCount  = 30;
     
     public const float LEMMING_FORCE = 0.2f;
     public const float LEMMING_SPEED = 2.75f;
@@ -24,9 +24,9 @@ public abstract class Node: MonoBehaviour, ISelectable
     public float visionRadius { get; set; } = 50;
     public float connectionRadius { get; set; } = 25;
 
-    private int _NodeDuplicationCost = 28;
-    private int _workerCost = 10;
-    private int _edgeCost = 15;
+    public int NodeDuplicationCost = 1;
+    public int _workerCost = 10;
+    public int _edgeCost = 1;
     
     public GameObject workerPrefab;
     private bool _workerSpawned = false;
@@ -108,7 +108,7 @@ public abstract class Node: MonoBehaviour, ISelectable
     {
         if (Vector2.Distance(position, gameObject.transform.position) < workRadius)
         {
-            if (lemmingCapacity < _NodeDuplicationCost)
+            if (lemmingCount < NodeDuplicationCost)
             {
                 /// todo send user a message that he hasn't enough Lemmings
                 return;
@@ -116,7 +116,7 @@ public abstract class Node: MonoBehaviour, ISelectable
             
             GameManger manager = GameManger.GetInstance();
             if (manager.BuildNodeFromNode(this,position)) 
-                lemmingCount -= _NodeDuplicationCost;
+                lemmingCount -= NodeDuplicationCost;
         }
     }
 

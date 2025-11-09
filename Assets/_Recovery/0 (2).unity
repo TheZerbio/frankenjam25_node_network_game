@@ -609,9 +609,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Script.Antagonist
   Edges: []
-  _nodeID: 0
   currentNode: {fileID: 0}
-  _state: 4
 --- !u!114 &1918727718 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4720482898451495784, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
@@ -641,9 +639,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Script.Antagonist
   Edges: []
-  _nodeID: 0
   currentNode: {fileID: 0}
-  _state: 4
 --- !u!1 &2001484203 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
