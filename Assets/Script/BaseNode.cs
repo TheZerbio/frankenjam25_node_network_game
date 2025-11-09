@@ -6,9 +6,9 @@ namespace Script
     public class BaseNode : Node
     {
         const int CAPACITY = 0; 
-        const float WORK_RADIUS = 120;
+        const float WORK_RADIUS = 100;
         const float VISION_RADIUS = 150;
-        const float CONNECTION_RADIUS = 50f;
+        const float CONNECTION_RADIUS = 80f; // Should be same as Standard Node Work radius
 
         public const int worker_cost = Int32.MaxValue;
         public Node starterConnection;
@@ -17,7 +17,7 @@ namespace Script
         public BaseNode()
             : base(CAPACITY, WORK_RADIUS, VISION_RADIUS, CONNECTION_RADIUS)
         {
-            
+            lemmingCapacity = 0;
         }
 
         public override void Update()

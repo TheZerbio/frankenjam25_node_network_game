@@ -114,10 +114,6 @@ namespace Script
 
         public void DestroyEdge(Edge edge)
         {
-            if(edge._node1)
-                edge._node1.edges.Remove(edge);
-            if(edge._node2)
-                edge._node2.edges.Remove(edge);
             Destroy(edge.gameObject);
         }
         

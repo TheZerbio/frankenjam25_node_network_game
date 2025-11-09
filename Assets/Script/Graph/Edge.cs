@@ -53,6 +53,13 @@ namespace Script.Graph
         {
             return Math.Min(this._node1.workRadius, this._node2.workRadius);
         }
-        
+
+        public void OnDestroy()
+        {
+            if(_node1)
+                _node1.edges.Remove(this);
+            if(_node2)
+                _node2.edges.Remove(this);
+        }
     }
 }
