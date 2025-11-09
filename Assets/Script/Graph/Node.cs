@@ -12,15 +12,16 @@ public abstract class Node : MonoBehaviour, ISelectable
     [SerializeField]
     public int fractionID = -1;
 
-    public int lemmingCapacity { get; set; } = 30;
-    public int lemmingCount { get; set; } = 30;
+    public int lemmingCapacity { get; set; } = 40;
+    public int lemmingCount = 2;
 
     public const float LEMMING_FORCE = 0.2f;
     public const float LEMMING_SPEED = 2.75f;
-    public float regenerationRate = 0.002f;
-
-    public List<Script.Graph.Edge> edges { get; private set; } = new List<Script.Graph.Edge>();
-
+    public float regenerationRate = 0.02f;
+    
+    public List<Edge> edges { get; private set; } = new List<Edge>();
+    protected int lastCount = 0;
+    
     // radia
     public float workRadius { get; set; } = 30;
     public float visionRadius { get; set; } = 50;
@@ -29,7 +30,7 @@ public abstract class Node : MonoBehaviour, ISelectable
     internal int _NodeDuplicationCost = 28;
     internal int _workerCost = 10;
     internal int _edgeCost = 15;
-
+    
     public GameObject workerPrefab;
     private bool _workerSpawned = false;
 
@@ -139,8 +140,17 @@ public abstract class Node : MonoBehaviour, ISelectable
             lemmingCount -= _edgeCost;
             var other = (Node)element;
             if (Vector2.Distance(transform.position, other.transform.position) <= workRadius)
+            {
+                if (other.fractionID == -1)
+                {
+                    other.fractionID = fractionID;
+                    other.PropagateFractioID();
+                }
                 if (!GameManger.GetInstance().CreateEdge(this, other, fractionID))
                     Debug.Log("Could create edge because of Faction issues");
+                
+            }
+                
         }
     }
 
@@ -162,9 +172,10 @@ public abstract class Node : MonoBehaviour, ISelectable
         var MDC = GetComponent<MultiDashedCircles>();
         if (MDC)
         {
-            //MDC.circles[0].radius = connectionRadius;
             MDC.circles[0].radius = workRadius;
             MDC.circles[1].radius = visionRadius;
+            if (this is BaseNode)
+                MDC.circles[0].radius = 0;
             return true;
         }
         return false;
@@ -197,9 +208,10 @@ public abstract class Node : MonoBehaviour, ISelectable
         if (otherSelectable == null) return;
 
         if (otherSelectable.GetElementType() == GetElementType())
+        {
+            KillAllEdges();
             Destroy(this.gameObject);
-
-
+        }
     }
 
     private void RegeneratePopulation()
@@ -267,4 +279,40 @@ public abstract class Node : MonoBehaviour, ISelectable
         return false; // No BaseNode found in reachable nodes
     }
 
+    public void PropagateFractioID()
+    {
+        var visited = new HashSet<Node>();
+        var queue = new Queue<Node>();
+        queue.Enqueue(this);
+        visited.Add(this);
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+
+            // ✅ Check if the node is a BaseNode
+            current.fractionID = fractionID;
+
+            foreach (var edge in current.edges)
+            {
+                var neighbor = edge.GetOtherNode(current);
+                if (neighbor != null && !visited.Contains(neighbor))
+                {
+                    visited.Add(neighbor);
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+    }
+    
+    void KillAllEdges()
+    {
+        var edgeArray = edges.ToArray();
+        edges = new List<Edge>();
+        for(int i = 0; i < edgeArray.Length; i++)
+        {
+            GameManger.GetInstance().DestroyEdge(edgeArray[i]);
+        }
+    }
+    
 }

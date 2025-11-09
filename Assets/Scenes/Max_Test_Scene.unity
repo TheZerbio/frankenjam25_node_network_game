@@ -616,6 +616,10 @@ PrefabInstance:
       propertyPath: fractionID
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3082853995443959724, guid: 46098bb6d91ada147a078e58c9c775f8, type: 3}
+      propertyPath: starterConnection
+      value: 
+      objectReference: {fileID: 224726263}
     - target: {fileID: 4019678996815786270, guid: 46098bb6d91ada147a078e58c9c775f8, type: 3}
       propertyPath: m_Name
       value: MainNode (1)
@@ -1079,7 +1083,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 779774049}
   - {fileID: 8183258097206290800}
-  - {fileID: 6350472358549769234}
   - {fileID: 1155567176}
   - {fileID: 410348664}
   - {fileID: 1629279468}

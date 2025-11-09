@@ -9,8 +9,8 @@ namespace Script
     public class StandardNode : Node
     {
         const int CAPACITY = 20; 
-        const float WORK_RADIUS = 60f;
-        const float VISION_RADIUS = 75f;
+        const float WORK_RADIUS = 80f;
+        const float VISION_RADIUS = 100f;
         const float CONNECTION_RADIUS = 40f;
 
         public const int worker_cost = 10;
@@ -39,6 +39,15 @@ namespace Script
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            if (lastCount != edges.Count || edges.Count == 0)
+            {
+                lastCount = edges.Count;
+                if (!IsConnectedToBaseNode())
+                {
+                    fractionID = -1;
+                    PropagateFractioID();
+                }
+            }
             counter.text =
 $@"Nauts: {lemmingCount}/{lemmingCapacity}
 Atttacker Cost: {_workerCost}
@@ -56,5 +65,6 @@ Node Cost: {_NodeDuplicationCost}";
         {
             
         }
+        
     }
 }
