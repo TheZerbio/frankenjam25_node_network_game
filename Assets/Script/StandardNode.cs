@@ -42,7 +42,7 @@ namespace Script
         
         public void Configure()
         {
-            //ConfigureBaseNode(lemmingCapacity, workRadius, visionRadius, connectionRadius);
+            
         }
     }
 }
