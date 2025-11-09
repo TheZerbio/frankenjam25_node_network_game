@@ -66,7 +66,7 @@ public class Worker : MonoBehaviour, ISelectable
         {
             _stoppingDistance = 0.5f *  gameObject.GetComponent<Collider2D>().bounds.size.y;
             Vector2 applyForce = GetCurrentCommand().GetTargetPosition() - _rigidbody.position;
-            _rigidbody.AddForce(_force * applyForce);
+            _rigidbody.AddForce(_force * applyForce.normalized);
             float angle = Mathf.Atan2(applyForce.y, applyForce.x) * Mathf.Rad2Deg;
             _rigidbody.SetRotation(Mathf.MoveTowardsAngle(_rigidbody.rotation, angle, 180* Time.deltaTime));
             _rigidbody.linearVelocity = Vector2.ClampMagnitude(_rigidbody.linearVelocity, speed);

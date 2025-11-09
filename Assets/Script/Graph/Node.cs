@@ -10,9 +10,9 @@ public abstract class Node: MonoBehaviour, ISelectable
     public int id { get; private set; }
     [SerializeField] public int fractionID = -1;
     public int lemmingCapacity { get; set; } = 0;
-    public int lemmingCount { get; } = 20;
+    public int lemmingCount { get; } = 10;
     
-    public const float LEMMING_FORCE = 0.02f;  
+    public const float LEMMING_FORCE = 0.015f;  
     
     // radia
     public float workRadius { get; set; } = 30;
@@ -125,5 +125,16 @@ public abstract class Node: MonoBehaviour, ISelectable
         }
         return false;
     }
-    
+
+
+    public virtual void OnCollisionEnter2D(Collision2D other)
+    {
+        ISelectable otherSelectable = other.collider.GetComponentInParent<ISelectable>();
+        if (otherSelectable == null) return;
+        
+        if (otherSelectable.GetElementType() == GetElementType()) 
+            Destroy(this.gameObject);
+        
+            
+    }
 }
