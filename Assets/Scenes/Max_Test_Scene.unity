@@ -829,7 +829,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4720482898451495784, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
       propertyPath: fractionID
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6238769552996276935, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -894,7 +894,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4720482898451495784, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
       propertyPath: fractionID
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6238769552996276935, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1087,3 +1087,4 @@ SceneRoots:
   - {fileID: 1056609643}
   - {fileID: 1165250500}
   - {fileID: 1537535254}
+  - {fileID: 1326187438}

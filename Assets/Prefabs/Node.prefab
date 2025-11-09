@@ -36,8 +36,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 17, y: 13}
-  m_SizeDelta: {x: 20, y: 10}
+  m_AnchoredPosition: {x: 22.5, y: 15.1}
+  m_SizeDelta: {x: 30, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &4077800222860465540
 Canvas:
@@ -179,9 +179,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Script.StandardNote
   fractionID: -1
-  counter: {fileID: 5585320443634432214}
   regenerationRate: 0.002
   workerPrefab: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
+  counter: {fileID: 5585320443634432214}
 --- !u!212 &5462725051979511604
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -297,10 +297,10 @@ MonoBehaviour:
     segmentCount: 64
     lineRenderer: {fileID: 0}
   - radius: 20
-    color: {r: 0, g: 0, b: 1, a: 1}}
+    color: {r: 0, g: 0, b: 1, a: 1}
     dashCountMultiplier: 25
     segmentCount: 64
-    lineRenderer: {fileID: 0}}
+    lineRenderer: {fileID: 0}
   - radius: 25
     color: {r: 0, g: 1, b: 0, a: 1}
     dashCountMultiplier: 25
@@ -341,7 +341,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 10}
+  m_SizeDelta: {x: 30, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2712661851937058444
 CanvasRenderer:
@@ -373,8 +373,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 30
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4c2016741632e284fba7ae654d9a65b7, type: 2}
+  m_sharedMaterial: {fileID: 2758049713103415897, guid: 4c2016741632e284fba7ae654d9a65b7, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -404,7 +404,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 1024
   m_textAlignment: 65535
@@ -414,7 +414,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
