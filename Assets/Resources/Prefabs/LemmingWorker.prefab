@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5800362305666261232}
   - component: {fileID: 1898325892009553388}
   - component: {fileID: 4467962736827474133}
+  - component: {fileID: 2609381397760031637}
   m_Layer: 0
   m_Name: LemmingWorker
   m_TagString: Untagged
@@ -125,8 +126,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 691155025
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 6211729888368662374, guid: 3883aad45ab384b41803c139f3ad9ebf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -307,3 +308,19 @@ PolygonCollider2D:
       - {x: 0.43449253, y: -3.6127398}
       - {x: 0.7625878, y: -3.5984747}
   m_UseDelaunayMesh: 0
+--- !u!114 &2609381397760031637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2364235185998897648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2fa46a1b2774376a9a920053e4892ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Script.Graph.DrawDashedLineClass
+  DashMultiplier: 20
+  lineWidth: 1
+  lineColor: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
+  worker: {fileID: 0}

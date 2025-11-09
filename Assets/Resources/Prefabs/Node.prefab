@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecddd4dc5bece0343a31f367f949fc67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CircleRenderer
-  lineWidth: 0.08
+  lineWidth: 0.4
   showCircles: 0
   circles:
   - radius: 15
@@ -302,10 +302,10 @@ MonoBehaviour:
     dashCountMultiplier: 25
     segmentCount: 64
     lineRenderer: {fileID: 0}
-  - radius: 25
-    color: {r: 0, g: 1, b: 0, a: 1}
+  - radius: 0
+    color: {r: 0, g: 1, b: 0, a: 0}
     dashCountMultiplier: 25
-    segmentCount: 64
+    segmentCount: 4
     lineRenderer: {fileID: 0}
 --- !u!1 &4331466220121060270
 GameObject:
