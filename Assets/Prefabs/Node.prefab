@@ -186,17 +186,12 @@ MonoBehaviour:
   showCircles: 0
   circles:
   - radius: 15
-    color: {r: 1, g: 0, b: 0, a: 1}
+    color: {r: 0.050980393, g: 0.6901961, b: 0.043137256, a: 1}
     dashCountMultiplier: 25
     segmentCount: 64
     lineRenderer: {fileID: 0}
   - radius: 20
-    color: {r: 0, g: 0, b: 1, a: 1}
-    dashCountMultiplier: 25
-    segmentCount: 64
-    lineRenderer: {fileID: 0}
-  - radius: 25
-    color: {r: 0, g: 1, b: 0, a: 1}
+    color: {r: 0.29803923, g: 0.29803923, b: 0.34117648, a: 1}
     dashCountMultiplier: 25
     segmentCount: 64
     lineRenderer: {fileID: 0}

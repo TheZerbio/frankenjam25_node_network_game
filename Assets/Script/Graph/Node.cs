@@ -1,9 +1,8 @@
 using System;
-using System.Net;
+using System.Collections.Generic;
 using Script;
-using Unity.VisualScripting;
+using Script.Graph;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public abstract class Node: MonoBehaviour, ISelectable
 {
@@ -13,6 +12,8 @@ public abstract class Node: MonoBehaviour, ISelectable
     public int lemmingCount { get; } = 20;
     
     public const float LEMMING_FORCE = 0.02f;  
+    
+    public List<Edge> edges { get; private set; } = new List<Edge>();
     
     // radia
     public float workRadius { get; set; } = 30;
@@ -47,22 +48,7 @@ public abstract class Node: MonoBehaviour, ISelectable
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         if (fractionID != -1) _restPosition = transform.position; // todo call whenever the fraction changes
-        try
-        {
-            if (fractionID == -1)
-            {
-                DefaultColor = Color.white;
-                HighlightColor = Color.lightGray;
-                return;
-            }
-            DefaultColor = GameManger.GetInstance().colors[fractionID];
-            HighlightColor = GameManger.GetInstance().highlightedColors[fractionID];
-        }
-        catch (IndexOutOfRangeException e)
-        {
-            
-            Debug.LogError("Node.cs: No Color set for this factionID: "+e);
-        }
+        
         GameManger.GetInstance().AddNodeToPlayerGraph(this,fractionID);
         
     }
@@ -71,6 +57,11 @@ public abstract class Node: MonoBehaviour, ISelectable
     {
         isSelected = true;
         SetMDCIfPresent(true);
+    }
+
+    public virtual void Update()
+    {
+        RefreshColours();
     }
 
     public virtual void FixedUpdate()
@@ -98,7 +89,16 @@ public abstract class Node: MonoBehaviour, ISelectable
         }
     }
 
-    public void OnActionToElement(ISelectable element) { }
+    public void OnActionToElement(ISelectable element)
+    {
+        if (element is Node)
+        {
+            var other = (Node)element;
+            if (Vector2.Distance(transform.position, other.transform.position) <= workRadius)
+                if (!GameManger.GetInstance().CreateEdge(this, other, fractionID))
+                    Debug.Log("Could create edge because of Faction issues");
+        }
+    }
 
     public GameObject getGameObject() =>  gameObject;
 
@@ -118,12 +118,61 @@ public abstract class Node: MonoBehaviour, ISelectable
         var MDC = GetComponent<MultiDashedCircles>();
         if (MDC)
         {
-            MDC.circles[0].radius = connectionRadius;
-            MDC.circles[1].radius = workRadius;
-            MDC.circles[2].radius = visionRadius;
+            //MDC.circles[0].radius = connectionRadius;
+            MDC.circles[0].radius = workRadius;
+            MDC.circles[1].radius = visionRadius;
             return true;
         }
         return false;
+    }
+
+    protected void RefreshColours()
+    {
+        try
+        {
+            if (fractionID == -1)
+            {
+                DefaultColor = Color.white;
+                HighlightColor = Color.lightGray;
+                return;
+            }
+            DefaultColor = GameManger.GetInstance().colors[fractionID];
+            HighlightColor = GameManger.GetInstance().highlightedColors[fractionID];
+        }
+        catch (IndexOutOfRangeException e)
+        {
+            
+            Debug.LogError("Node.cs: No Color set for this factionID: "+e);
+        }
+    }
+    
+    public bool IsConnectedToBaseNode()
+    {
+        var visited = new HashSet<Node>();
+        var queue = new Queue<Node>();
+        queue.Enqueue(this);
+        visited.Add(this);
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+
+            // ✅ Check if the node is a BaseNode
+            if (current is BaseNode)
+                return true;
+
+            foreach (var edge in current.edges)
+            {
+                var neighbor = edge.GetOtherNode(current);
+                if (neighbor != null && !visited.Contains(neighbor))
+                {
+                    visited.Add(neighbor);
+                    queue.Enqueue(neighbor);
+                }
+            }
+        }
+
+        return false; // No BaseNode found in reachable nodes
     }
     
 }

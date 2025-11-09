@@ -21,8 +21,9 @@ namespace Script
             
         }
 
-        void Update()
+        public override void Update()
         {
+            base.Update();
             var sprite = GetComponent<SpriteRenderer>();
             sprite.color = !isSelected ? DefaultColor : HighlightColor;
         }

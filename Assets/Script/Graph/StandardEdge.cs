@@ -9,8 +9,9 @@ namespace Script.Graph
         public Color lineColor = Color.black;
         public float ConnectionVolume = 1000f;
 
-        void Start()
+        public override void Start()
         {
+            base.Start();
             _line = gameObject.AddComponent<TexturedLine>();
             _line.lineTexture = lineTexture;
             _line.LineColor = lineColor;
@@ -35,10 +36,10 @@ namespace Script.Graph
             joint2.distance = (_node2.transform.position - transform.position).magnitude;
         }
 
-        void Update()
+        public override void Update()
         {
+            base.Update();
             MoveBetweenNodes();
-            
         }
 
         private void MoveBetweenNodes()
