@@ -11,6 +11,7 @@ namespace Script
         const float CONNECTION_RADIUS = 50f;
 
         public const int worker_cost = Int32.MaxValue;
+        public Node starterConnection;
 
 
         public BaseNode()
@@ -19,14 +20,19 @@ namespace Script
             
         }
 
-        void Update()
+        public override void Update()
         {
+            base.Update();
             var sprite = GetComponent<SpriteRenderer>();
             sprite.color = !isSelected ? DefaultColor : HighlightColor;
+            if (edges.Count == 0)
+                fractionID = -1;
         }
         
         public override void Start()
         {
+            if(starterConnection)
+                GameManger.GetInstance().CreateEdge(this, starterConnection,fractionID);
             Configure();
             base.Start();
             ConfigureMDCIfPresent();

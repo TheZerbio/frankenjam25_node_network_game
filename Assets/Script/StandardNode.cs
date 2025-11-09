@@ -21,8 +21,9 @@ namespace Script
             
         }
 
-        void Update()
+        public override void Update()
         {
+            base.Update();
             var sprite = GetComponent<SpriteRenderer>();
             sprite.color = !isSelected ? DefaultColor : HighlightColor;
         }
@@ -39,7 +40,12 @@ namespace Script
             base.FixedUpdate();
         }
 
-        
+        public override void OnCollisionEnter2D(Collision2D other)
+        {
+            base.OnCollisionEnter2D(other);
+        }
+
+
         public void Configure()
         {
             

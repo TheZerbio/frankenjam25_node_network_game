@@ -24,7 +24,6 @@ namespace Script.Graph
 
             LineRenderer lr = lrObj.AddComponent<LineRenderer>();
             lr.useWorldSpace = true;
-            lr.textureMode = LineTextureMode.Tile;
             lr.widthMultiplier = lineWidth;
             lr.material = new Material(Shader.Find("Sprites/Default"));
             lr.sortingLayerName = "Dashes";

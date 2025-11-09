@@ -9,6 +9,7 @@ public enum ClickableType
 
 public interface ISelectable
 {
+    public int GetFraction();
     public ClickableType GetElementType();
     public void OnSelect();
     public void OnDeselect();

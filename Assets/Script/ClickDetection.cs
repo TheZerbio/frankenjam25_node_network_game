@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Script;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -40,7 +41,8 @@ public class ClickDetection : MonoBehaviour
             if (hit.collider != null )
             {
                 ISelectable selectable = hit.collider.GetComponent<ISelectable>();
-                if (selectable == null) { 
+                
+                if (selectable == null || selectable.GetFraction() != GameManger.GetInstance().CurrentPlayer) { 
                     onVoidLeftClick();
                     return;
                 }

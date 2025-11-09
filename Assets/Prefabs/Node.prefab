@@ -180,6 +180,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Script.StandardNote
   fractionID: -1
   counter: {fileID: 5585320443634432214}
+  regenerationRate: 0.002
+  workerPrefab: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}
 --- !u!212 &5462725051979511604
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -295,10 +297,10 @@ MonoBehaviour:
     segmentCount: 64
     lineRenderer: {fileID: 0}
   - radius: 20
-    color: {r: 0, g: 0, b: 1, a: 1}
+    color: {r: 0, g: 0, b: 1, a: 1}}
     dashCountMultiplier: 25
     segmentCount: 64
-    lineRenderer: {fileID: 0}
+    lineRenderer: {fileID: 0}}
   - radius: 25
     color: {r: 0, g: 1, b: 0, a: 1}
     dashCountMultiplier: 25
