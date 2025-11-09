@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 8c9cfa26abfee488c85f1582747f6a02
-DefaultImporter:
+guid: 98afdd6f5907b7c4d954410de802dc12
+PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 
@@ -10,6 +10,6 @@ AssetOrigin:
   productId: 184010
   packageName: Universal Pop Up (Message Box, Loading, Calendar Picker, Date Picker
     etc.)
-  packageVersion: 
-  assetPath: Assets/Scenes/TestScene.unity
-  uploadId: 0
+  packageVersion: 1.0
+  assetPath: Assets/Resources/UniversolPopUps/UniversalDialogueInputPopUp.prefab
+  uploadId: 405416

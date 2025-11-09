@@ -49,11 +49,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Worker
   id: 0
   fractionID: -1
-  force: 1
+  force: 2
   DefaultColor: {r: 1, g: 0.5490196, b: 0, a: 1}
   HighlightColor: {r: 0, g: 0.5450981, b: 0.5450981, a: 1}
   isSelected: 0
-  speed: 2
+  speed: 10
 --- !u!50 &5800362305666261232
 Rigidbody2D:
   serializedVersion: 5
