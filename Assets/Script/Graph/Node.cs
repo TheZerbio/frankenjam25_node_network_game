@@ -117,7 +117,7 @@ public abstract class Node : MonoBehaviour, ISelectable
         {
             if (lemmingCapacity < _NodeDuplicationCost)
             {
-                /// todo send user a message that he hasn't enough Lemmings
+                UniversalPopUps.ShowOkMessage("You don't have enough Nauts!", "Not enough Nauts!", UniversalDialogueInputPopUp.MESSAGE_TYPE.ERROR);
                 return;
             }
 
