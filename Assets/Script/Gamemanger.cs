@@ -33,6 +33,7 @@ namespace Script
         public GameObject nodePrefab;
         public GameObject edgePrefab;
         private Graph.Graph[] PlayerGraphs = new Graph.Graph[2];
+        public int CurrentPlayer { get;  }= 0 ;
         
         public static GameManger GetInstance()
         {

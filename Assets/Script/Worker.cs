@@ -91,6 +91,9 @@ public class Worker : MonoBehaviour, ISelectable
     }
 
 
+    public int GetFraction() => fractionID;
+   
+
     public ClickableType GetElementType()
     {
         return ClickableType.Lemming;

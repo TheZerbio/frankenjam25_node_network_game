@@ -4,15 +4,17 @@ using Script;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public abstract class Node: MonoBehaviour, ISelectable
 {
     public int id { get; private set; }
     [SerializeField] public int fractionID = -1;
     public int lemmingCapacity { get; set; } = 0;
-    public int lemmingCount { get; } = 10;
+    public int lemmingCount { get; set; } = 2;
     
-    public const float LEMMING_FORCE = 0.015f;  
+    public const float LEMMING_FORCE = 0.015f;
+    public float regenerationRate = 0.002f;
     
     // radia
     public float workRadius { get; set; } = 30;
@@ -37,7 +39,10 @@ public abstract class Node: MonoBehaviour, ISelectable
         this.connectionRadius = connectionRadius;
         this.workRadius = workRadius;
     }
-    
+
+    public int GetFraction() => fractionID;
+
+
     public ClickableType GetElementType()
     {
         return ClickableType.Node;
@@ -75,6 +80,7 @@ public abstract class Node: MonoBehaviour, ISelectable
 
     public virtual void FixedUpdate()
     {
+        RegeneratePopulation();
         if (  fractionID != -1 && Vector2.Distance(transform.position, _restPosition) > 0.5 * connectionRadius)
         {
             Vector2 delta = _restPosition - (Vector2)transform.position;
@@ -137,4 +143,14 @@ public abstract class Node: MonoBehaviour, ISelectable
         
             
     }
+
+    private void RegeneratePopulation()
+    {
+        if (fractionID == -1) { return;}
+        int lemmingIncrease = (Random.Range(0f, 1f) <= (lemmingCount* 0.7f) / (float)lemmingCapacity * regenerationRate)? 1 : 0;
+        lemmingCount = Math.Min(lemmingCount + lemmingIncrease, lemmingCapacity);
+    }
+    
+    
+    
 }
