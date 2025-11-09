@@ -16,7 +16,7 @@ public class Worker : MonoBehaviour, ISelectable
     public long id;
     public ClickableType elementType { get; private set; }
     public int fractionID = 0;
-    private float _force = 0.2f;
+    private float _force = 1f;
     
     // color change when selected 
     Color _defaultColor = Color.darkOrange;
@@ -26,7 +26,7 @@ public class Worker : MonoBehaviour, ISelectable
     public bool isSelected = false;
     
     // movement 
-    public float speed = 16f;
+    public float speed = 20f;
     public List<Command> NextCommands = new List<Command>();
     
 

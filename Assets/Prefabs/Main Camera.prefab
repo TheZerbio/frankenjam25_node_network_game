@@ -153,7 +153,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraGrabPanWithBoundsGizmo
   zoomSpeed: 500
   minZoom: 5
-  maxZoom: 75
+  maxZoom: 150
   panSpeed: 1
   minBounds: {x: -800, y: -450}
   maxBounds: {x: 800, y: 450}
@@ -170,3 +170,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 431e612626bb1ff49a6400b6c3f86340, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickDetection
+  mainCamera: {fileID: 0}

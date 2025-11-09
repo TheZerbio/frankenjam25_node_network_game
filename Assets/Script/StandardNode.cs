@@ -21,8 +21,9 @@ namespace Script
             
         }
 
-        void Update()
+        public override void Update()
         {
+            base.Update();
             var sprite = GetComponent<SpriteRenderer>();
             sprite.color = !isSelected ? DefaultColor : HighlightColor;
         }
@@ -47,7 +48,7 @@ namespace Script
 
         public void Configure()
         {
-            //ConfigureBaseNode(lemmingCapacity, workRadius, visionRadius, connectionRadius);
+            
         }
     }
 }
