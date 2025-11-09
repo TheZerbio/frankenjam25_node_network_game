@@ -113,11 +113,10 @@ public abstract class Node: MonoBehaviour, ISelectable
                 /// todo send user a message that he hasn't enough Lemmings
                 return;
             }
-
-            lemmingCount -= _NodeDuplicationCost;
             
             GameManger manager = GameManger.GetInstance();
-            manager.BuildNodeFromNode(this,position);
+            if (manager.BuildNodeFromNode(this,position)) 
+                lemmingCount -= _NodeDuplicationCost;
         }
     }
 
@@ -131,11 +130,14 @@ public abstract class Node: MonoBehaviour, ISelectable
                 return;
             }
 
-            lemmingCount -= _edgeCost;
+            
             var other = (Node)element;
             if (Vector2.Distance(transform.position, other.transform.position) <= workRadius)
+            {
                 if (!GameManger.GetInstance().CreateEdge(this, other, fractionID))
                     Debug.Log("Could create edge because of Faction issues");
+                else lemmingCount -= _edgeCost;
+            }
         }
     }
 

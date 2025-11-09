@@ -76,6 +76,10 @@ namespace Script
             node.fractionID = fraction;
             node.Start();
             PlayerGraphs[fraction].AddNode(node);
+            if (node.fractionID != CurrentPlayer)
+            {
+                nodeGO.AddComponent<Antagonist>();
+            }
             return node;
         }
 
