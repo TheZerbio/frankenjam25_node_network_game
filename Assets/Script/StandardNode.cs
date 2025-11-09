@@ -49,10 +49,10 @@ namespace Script
                 }
             }
             counter.text =
-$@"Nauts: {lemmingCount}/{lemmingCapacity}
-Atttacker Cost: {_workerCost}
-Edge Cost: {_edgeCost}
-Node Cost: {_NodeDuplicationCost}";
+                $@"Nauts: {lemmingCount}/{lemmingCapacity}
+                Atttacker Cost: {_workerCost}
+                Edge Cost: {_edgeCost}
+                Node Cost: {_NodeDuplicationCost}";
         }
 
         public override void OnCollisionEnter2D(Collision2D other)

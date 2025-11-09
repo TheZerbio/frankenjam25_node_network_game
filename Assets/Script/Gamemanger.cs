@@ -33,32 +33,22 @@ namespace Script
         public Color[] highlightedColors;
         public GameObject nodePrefab;
         public GameObject edgePrefab;
-        private Graph.Graph[] PlayerGraphs = new Graph.Graph[2];
         public int CurrentPlayer = 0 ;
         
         public static GameManger GetInstance()
         {
             if (_instance == null)
             {
-                Debug.LogError("GameManger not found, Make Sure you have one in our Scene");
-                Debug.LogError("Instatiating new GameManger");
-                try
+                GameObject prefab = Resources.Load<GameObject>("Prefabs/GameManager");
+                if (prefab != null)
                 {
-                    GameObject prefab = Resources.Load<GameObject>("Prefabs/GameManager");
-                    if (prefab != null)
-                    {
-                        Instantiate(prefab, Vector3.zero, Quaternion.identity);
-                    }
-                    else
-                    {
-                        Debug.LogError("GameManager prefab not found!");
-                    }
+                    var obj = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+                    _instance = obj.GetComponent<GameManger>();
                 }
-                catch (Exception e)
+                else
                 {
-                    Debug.LogError("GameManager prefab could not be loaded:" + e.Message);
+                    Debug.LogError("GameManager prefab not found!");
                 }
-                return null;
             }
             return _instance;
         }
@@ -74,17 +64,6 @@ namespace Script
                 Debug.LogError("Multiple GameManger found, Make Sure you have only one in our Scene");
                 Destroy(this);
             }
-            for (int i = 0; i < PlayerGraphs.Length; i++)
-            {
-                PlayerGraphs[i] = new Graph.Graph();
-            }
-        }
-
-        public bool AddNodeToPlayerGraph(Node node, int fraction)
-        {
-            if (fraction == -1)
-                return false;
-            return PlayerGraphs[fraction].AddNode(node);
         }
         
         public Node CreateNode(Vector3 position, int fraction)
@@ -99,7 +78,6 @@ namespace Script
             Node node = nodeGO.GetComponent<Node>();
             node.fractionID = fraction;
             node.Start();
-            PlayerGraphs[fraction].AddNode(node);
             return node;
         }
 
@@ -114,13 +92,11 @@ namespace Script
                 if (start.fractionID == -1)
                 {
                     start.fractionID = end.fractionID;
-                    PlayerGraphs[end.fractionID].AddNode(start);
                 }
 
                 if (end.fractionID == -1)
                 {
                     end.fractionID = start.fractionID;
-                    PlayerGraphs[start.fractionID].AddNode(end);
                 }
                 foreach (Edge e  in start.edges.Union(end.edges))
                 {

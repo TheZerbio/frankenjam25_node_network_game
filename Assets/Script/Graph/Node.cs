@@ -69,8 +69,7 @@ public abstract class Node : MonoBehaviour, ISelectable
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         if (fractionID != -1) _restPosition = transform.position; // todo call whenever the fraction changes
-
-        GameManger.GetInstance().AddNodeToPlayerGraph(this, fractionID);
+        
         counter.gameObject.SetActive(false);
     }
 
@@ -89,12 +88,14 @@ public abstract class Node : MonoBehaviour, ISelectable
     public virtual void FixedUpdate()
     {
         RegeneratePopulation();
+        
         if (fractionID != -1 && Vector2.Distance(transform.position, _restPosition) > 0.5 * connectionRadius)
         {
             float managerBonus = isSelected ? 1.1f : 0.8f;
             Vector2 delta = _restPosition - (Vector2)transform.position;
             _rigidbody.AddForce(lemmingCount * LEMMING_FORCE * managerBonus * delta.normalized);
         }
+        
 
         if (isSelected && InputSystem.actions["Spawn"].IsPressed())
         {
