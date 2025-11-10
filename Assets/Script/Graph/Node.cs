@@ -88,7 +88,7 @@ public abstract class Node : MonoBehaviour, ISelectable
     public virtual void FixedUpdate()
     {
         RegeneratePopulation();
-        
+        //ToDo: Currently full nodes are almost impossible to remove
         if (fractionID != -1 && Vector2.Distance(transform.position, _restPosition) > 0.5 * connectionRadius)
         {
             float managerBonus = isSelected ? 1.1f : 0.8f;
@@ -212,7 +212,7 @@ public abstract class Node : MonoBehaviour, ISelectable
         ISelectable otherSelectable = other.collider.GetComponentInParent<ISelectable>();
         if (otherSelectable == null) return;
 
-        if (otherSelectable.GetElementType() == GetElementType())
+        if (otherSelectable.GetElementType() == GetElementType() && this is StandardNode)
         {
             KillAllEdges();
             Destroy(this.gameObject);

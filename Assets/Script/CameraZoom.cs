@@ -61,6 +61,17 @@ public class CameraGrabPanWithBoundsGizmo : MonoBehaviour
     {
         HandleZoom();
         HandleGrabPan();
+        HandleKeyMove();
+    }
+
+    private void HandleKeyMove()
+    {
+        var move = InputSystem.actions["Move"].ReadValue<Vector2>();
+        if (move.magnitude != 0)
+        {
+            transform.position = transform.position+(Vector3)move;
+            ClampCameraPosition();
+        }
     }
 
     private void HandleZoom()
