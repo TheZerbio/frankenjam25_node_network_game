@@ -7,17 +7,7 @@ using Random = System.Random;
 namespace Script
 {
 
-    enum State
-    {
-        Prepare,
-        Attack,
-        Fortify,
-        Connect,
-        Expand,
-        Circle,
-        Sink, 
-        
-    }
+   
 
     public class Antagonist : MonoBehaviour
     {
@@ -29,11 +19,12 @@ namespace Script
         private static List<Node> _nodes = new List<Node>();
         public static List<Vector2> nextPositions = new List<Vector2>();
 
-        State _state = State.Circle;
+        public State _state;
+        private State _defaultState = State.Circle;
 
         private void Start()
         {
-            nextPositions.Remove((Vector2)transform.position);
+            bool planned = nextPositions.Remove((Vector2)transform.position);
             currentNode = gameObject.GetComponent<Node>();
             
 
@@ -46,13 +37,17 @@ namespace Script
             else
             {
                 _nodeID = _nodes.Count == 0? 1 : _nodes.Count;
-                 _state = State.Circle;
-                 _nodes.Add(currentNode);
+                _state = _defaultState;
+                _nodes.Add(currentNode);
             }
             // if it is the first operational node
             if (_nodes.Count == 2 && nextPositions.Count == 0)
             {
                 nextPositions = GetCirclePoints(_nodes[0], _nodes[1].transform.position);
+            }
+            else if (!planned && _state == State.Fortify)
+            {
+                _state = State.Expand;
             }
             
            
@@ -71,6 +66,7 @@ namespace Script
                     Fortify();
                     break;
                 case State.Expand:
+                    Expand();
                     break;
                 case State.Circle:
                     Circle();
@@ -93,11 +89,13 @@ namespace Script
 
         private void Fortify()
         {
+            
+            if (currentNode.lemmingCount < currentNode._edgeCost) return;
+                currentNode.OnActionToElement(_nodes[0]);
+            
             if (currentNode.lemmingCount < currentNode._edgeCost) return;
                 currentNode.OnActionToElement(_nodes[_nodeID-1]);
-
-                if (currentNode.lemmingCount < currentNode._edgeCost) return;
-            currentNode.OnActionToElement(_nodes[0]);
+                
             if (_nodeID == 6)
             {
                 if (currentNode.lemmingCount < currentNode._edgeCost) return;
@@ -109,7 +107,15 @@ namespace Script
 
         private void Expand()
         {
+            if (currentNode.lemmingCount < currentNode.NodeDuplicationCost) return;
+            Vector2 vecAway = currentNode.transform.position - _nodes[0].transform.position;
+            vecAway = 0.8f * currentNode.workRadius *  vecAway.normalized;
+            currentNode.OnActionToVoid((Vector2)currentNode.transform.position + vecAway);
+        }
 
+        private void Connect()
+        {
+            
         }
 
         private List<Vector2> GetCirclePoints(Node centerNode, Vector2 startPosition)

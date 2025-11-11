@@ -130,10 +130,16 @@ public abstract class Node: MonoBehaviour, ISelectable
                 return;
             }
 
-            
-            var other = (Node)element;
-            if (Vector2.Distance(transform.position, other.transform.position) <= workRadius)
+
+            Node other = (Node)element;
+            if (other != null && Vector2.Distance(transform.position, other.transform.position) <= workRadius)
             {
+                bool inList = false;
+                foreach (var ed in edges)
+                {
+                    if (ed._node1 == other ||  ed._node2 == other)
+                        return;
+                }
                 if (!GameManger.GetInstance().CreateEdge(this, other, fractionID))
                     Debug.Log("Could create edge because of Faction issues");
                 else lemmingCount -= _edgeCost;
