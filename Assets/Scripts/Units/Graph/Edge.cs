@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Units.Graph;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -26,7 +27,7 @@ namespace Script.Graph
 
         public virtual void Start()
         {
-            
+            PropagateFractionID();
         }
 
         public virtual void Update()
@@ -51,7 +52,7 @@ namespace Script.Graph
 
         public float GetDissconectDistance()
         {
-            return Math.Min(this._node1.workRadius, this._node2.workRadius);
+            return Math.Min(this._node1.buildRadius, this._node2.buildRadius);
         }
 
         public virtual void OnDestroy()
@@ -60,6 +61,14 @@ namespace Script.Graph
                 _node1.edges.Remove(this);
             if(_node2)
                 _node2.edges.Remove(this);
+        }
+
+        protected void PropagateFractionID()
+        {
+            if(_node1.fractionID==-1)
+                _node1.fractionID = _node2.fractionID;
+            if(_node2.fractionID==-1)
+                _node2.fractionID = _node1.fractionID;
         }
     }
 }
