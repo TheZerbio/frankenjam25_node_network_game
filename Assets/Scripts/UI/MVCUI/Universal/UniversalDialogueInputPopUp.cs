@@ -43,7 +43,7 @@ public class UniversalDialogueInputPopUp : MonoBehaviour
     {
         if (transform.parent == null || transform.parent.GetComponent<Canvas>() == null)
         {
-            transform.SetParent(GringameObject.FindObjectOfType<Canvas>().transform);
+            transform.SetParent(GameObject.FindFirstObjectByType<Canvas>().transform);
             transform.localPosition = Vector3.zero;
         }
         transform.SetAsLastSibling();
