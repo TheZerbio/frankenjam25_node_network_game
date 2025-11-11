@@ -1,4 +1,5 @@
 using System;
+using Units.Graph;
 using UnityEngine;
 
 namespace Script
@@ -8,14 +9,13 @@ namespace Script
         const int CAPACITY = 0; 
         const float WORK_RADIUS = 100;
         const float VISION_RADIUS = 150;
-        const float CONNECTION_RADIUS = 80f; // Should be same as Standard Node Work radius
 
         public const int worker_cost = Int32.MaxValue;
         public Node starterConnection;
 
 
         public BaseNode()
-            : base(CAPACITY, WORK_RADIUS, VISION_RADIUS, CONNECTION_RADIUS)
+            : base(CAPACITY, WORK_RADIUS, VISION_RADIUS)
         {
             lemmingCapacity = 0;
         }
@@ -23,8 +23,6 @@ namespace Script
         public override void Update()
         {
             base.Update();
-            var sprite = GetComponent<SpriteRenderer>();
-            sprite.color = !isSelected ? DefaultColor : HighlightColor;
             if (edges.Count == 0)
                 fractionID = -1;
         }
@@ -48,9 +46,7 @@ namespace Script
         {
             var _rigidbody = GetComponent<Rigidbody2D>();
             if (_rigidbody)
-            {
                 _rigidbody.bodyType = RigidbodyType2D.Static;
-            }
         }
     }
 }
