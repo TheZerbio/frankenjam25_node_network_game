@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Script.Graph;
+using Units.Graph;
 using UnityEngine;
 
 namespace Script
@@ -89,15 +90,6 @@ namespace Script
                 var edgeGO = Instantiate(edgePrefab, Vector3.zero, Quaternion.identity);
                 StandardEdge edge = edgeGO.GetComponent<StandardEdge>();
                 edge.Configure(start, end);
-                if (start.fractionID == -1)
-                {
-                    start.fractionID = end.fractionID;
-                }
-
-                if (end.fractionID == -1)
-                {
-                    end.fractionID = start.fractionID;
-                }
                 foreach (Edge e  in start.edges.Union(end.edges))
                 {
                     if (e.Equals(edge))
@@ -128,7 +120,7 @@ namespace Script
         
         public bool BuildNodeFromNode(Node node, Vector3 position)
         {
-            if (Vector2.Distance(node.transform.position,position) > node.workRadius)
+            if (Vector2.Distance(node.transform.position,position) > node.buildRadius)
                 return false;
             
             Node newNode = CreateNode(position, node.fractionID);

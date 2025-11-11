@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Xml.Schema;
+using Script.Units;
 using TMPro;
+using Units.Graph;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,24 +13,21 @@ namespace Script
         const int CAPACITY = 40; 
         const float WORK_RADIUS = 80f;
         const float VISION_RADIUS = 100f;
-        const float CONNECTION_RADIUS = 40f;
 
-        public const int worker_cost = 10;
+        public const int worker_cost = UnitConfig.WORKER_COST;
 
 
         public StandardNode()
-            : base(CAPACITY, WORK_RADIUS, VISION_RADIUS, CONNECTION_RADIUS)
+            : base(CAPACITY, WORK_RADIUS, VISION_RADIUS)
         {
-            
         }
 
         public override void Update()
         {
             base.Update();
-            var sprite = GetComponent<SpriteRenderer>();
-            sprite.color = !isSelected ? DefaultColor : HighlightColor;
         }
         
+
         public override void Start()
         {
             Configure();
@@ -39,9 +38,9 @@ namespace Script
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-            if (lastCount != edges.Count || edges.Count == 0)
+            if (LastCount != edges.Count || edges.Count == 0)
             {
-                lastCount = edges.Count;
+                LastCount = edges.Count;
                 if (!IsConnectedToBaseNode())
                 {
                     fractionID = -1;
