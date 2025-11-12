@@ -62,8 +62,8 @@ namespace Script
     public class SubordinateAction
     {
         public SubordinateState State;
-        private readonly Vector2? _position;
-        public readonly ISelectable Target;
+        private Vector2? _position;
+        public ISelectable Target;
 
         public SubordinateAction(SubordinateState state, Vector2? position, ISelectable target)
         {
@@ -83,10 +83,11 @@ namespace Script
             public AntagonistState state;
             public Vector2 position;
             public float priority = 1;
-            public AntagonistAction(AntagonistState state, Vector2 position)
+            public AntagonistAction(AntagonistState state, Vector2 position, float priority = 1)
             {
                 this.state = state;
                 this.position = position;
+                this.priority = priority;
             }
         }
 
@@ -98,7 +99,7 @@ namespace Script
         {
             if (actor.getType() == ClickableType.Node)
                 if ((actor.isBaseNote && _networkNodes.Count > 0) || _networkNodes.Count == 1) 
-                    PlanFortification(actor.GetNode(), Random.Range(1, 3));
+                    PlanFortification(actor.GetNode(), true? 3 : Random.Range(1, 3));
 
             for (int goal_index = 0; goal_index < Goals.Count; goal_index++)
             {
@@ -142,10 +143,10 @@ namespace Script
             
             foreach (var goal in Goals.Where(goal => !worker || 
                             CanBeUsedByWorker(goal.state)).Where(goal => bestAction == null ||
-                                                                         bestDistance > Vector2.Distance(goal.position, position)))
+                                                                         bestDistance > Vector2.Distance(goal.position, position) / goal.priority))
             {
                 bestAction = goal;
-                bestDistance = Vector2.Distance(goal.position, position);
+                bestDistance = Vector2.Distance(goal.position, position) / goal.priority;
             }
 
             return bestAction;
@@ -154,7 +155,7 @@ namespace Script
         private static bool CanBeUsedByWorker(AntagonistState state)
             => state != AntagonistState.Fortify && state != AntagonistState.Explore;
 
-        private void PlanFortifyLayer(Node center, Vector3 firstNodeOnLayerPos)
+        private void PlanFortifyLayer(Node center, Vector3 firstNodeOnLayerPos, int layer = 1)
         {
             var centerPos = center.transform.position;
             
@@ -163,31 +164,32 @@ namespace Script
 
             // calculate the angle between nodes by calculating the number of vertices and dividing the circle into
             // equal parts (the smallest Polynomial has 3 Vertices) 
-            var numberOfNodes = math.max(Mathf.RoundToInt(Mathf.PI / Mathf.Asin(segmentLength / 2 * radius)), 3);
+            var numberOfNodes = math.max(Mathf.RoundToInt(Mathf.PI / Mathf.Asin(segmentLength / (2 * radius))), 3);
             var angleStep = 360f / numberOfNodes;
             
             for (var i = 1; i < numberOfNodes ; i++)
             {
                 var angle = angleStep * i;
                 Vector2 rotated = centerPos + Quaternion.Euler(0, 0, angle) * (firstNodeOnLayerPos - centerPos);
-                Goals.Add(new AntagonistAction(AntagonistState.Fortify, rotated));
+                Goals.Add(new AntagonistAction(AntagonistState.Fortify, rotated, 1f/ layer));
             }
         }
 
         private void PlanFortification(Node center, int levels)
         {
             var lastLayerStart = center.transform.position;
-            var expansionVector = (-center.transform.position).normalized * 0.8f * center.workRadius;
-            for (var layer = 0; layer < levels; layer++)
+                        for (var layer = 0; layer < levels; layer++)
             {
                 // find/ create first node 
                 Vector3? firstNodeOnLayerPos = null;
+                var expansionVector = (lastLayerStart-center.transform.position).normalized * 0.8f * center.workRadius;
+
                 foreach (var node in _networkNodes)
                 {
                     var nodeCenterDistance = Vector2.Distance(node.GetPos(), center.transform.position);
                     var lastCenterDistance = Vector2.Distance(lastLayerStart, center.transform.position);
                     if (nodeCenterDistance <= lastCenterDistance + center.workRadius &&
-                        nodeCenterDistance > lastCenterDistance)
+                        nodeCenterDistance > lastCenterDistance  + center.connectionRadius)
                     {
                         firstNodeOnLayerPos = node.GetPos();
                         break;
@@ -197,9 +199,9 @@ namespace Script
                 lastLayerStart =  firstNodeOnLayerPos?? (lastLayerStart + expansionVector);
                     
                 if (firstNodeOnLayerPos == null) 
-                    Goals.Add(new AntagonistAction(AntagonistState.Fortify, lastLayerStart));
+                    Goals.Add(new AntagonistAction(AntagonistState.Fortify, lastLayerStart,1f/ layer));
                 
-                PlanFortifyLayer(center, lastLayerStart);
+                PlanFortifyLayer(center, lastLayerStart,  layer);
             }
         }
 

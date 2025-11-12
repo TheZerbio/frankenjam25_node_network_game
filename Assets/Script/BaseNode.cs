@@ -8,7 +8,7 @@ namespace Script
         const int CAPACITY = 0; 
         const float WORK_RADIUS = 60f;
         const float VISION_RADIUS = 150;
-        const float CONNECTION_RADIUS = 50f;
+        const float CONNECTION_RADIUS = 15f;
 
         public const int worker_cost = Int32.MaxValue;
         public Node starterConnection;

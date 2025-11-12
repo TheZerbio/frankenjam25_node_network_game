@@ -10,7 +10,7 @@ namespace Script
         const int CAPACITY = 20; 
         const float WORK_RADIUS = 60f;
         const float VISION_RADIUS = 75f;
-        const float CONNECTION_RADIUS = 40f;
+        const float CONNECTION_RADIUS = 15f;
 
         public const int worker_cost = 10;
 

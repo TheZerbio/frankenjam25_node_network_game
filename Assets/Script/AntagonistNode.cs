@@ -39,6 +39,7 @@ namespace Script
         private void FixedUpdate()
         {
             if (isBaseNote) return;
+            _controller ??= AntagonistReferer.GetControllerByID(_element.GetFraction());
             if (actions.Count == 0) _controller.RequestAction(this);
             if (actions.Count == 0) return;
             
@@ -51,7 +52,10 @@ namespace Script
             {
                 case SubordinateState.ActionTo:
                     
-                    // todo check if something is at the position
+                    action.Target = GetElementAt(action.GetPosition());
+                    if (action.Target != null) 
+                        goto case SubordinateState.ConnectWith;
+                    
                     if (_element.OnActionToVoid(action.GetPosition()))
                         completed = true;
                     break;
@@ -67,6 +71,12 @@ namespace Script
             }
 
             if (completed) actions.RemoveAt(0);
+        }
+
+        private ISelectable GetElementAt(Vector2 pos)
+        {
+            var probe = Physics2D.Raycast(pos, Vector2.zero);
+            return probe.collider != null ? probe.collider.GetComponent<ISelectable>() : null;
         }
     }
 }
