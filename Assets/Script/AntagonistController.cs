@@ -80,15 +80,17 @@ namespace Script
 
         private class AntagonistAction
         {
-            public AntagonistState state;
-            public Vector2 position;
-            public float priority = 1;
-            public AntagonistAction(AntagonistState state, Vector2 position, float priority = 1)
+            public readonly AntagonistState State;
+            private Vector2? _position;
+            private ISelectable _target;
+            public readonly float Priority = 1;
+            public AntagonistAction(AntagonistState state, Vector2? position = null, ISelectable target = null, float priority = 1)
             {
-                this.state = state;
-                this.position = position;
-                this.priority = priority;
+                this.State = state;
+                this._position = position;
+                this.Priority = priority;
             }
+            public Vector2 GetPos() => _position?? _target.getGameObject().transform.position;
         }
 
 
@@ -104,9 +106,9 @@ namespace Script
             for (int goal_index = 0; goal_index < Goals.Count; goal_index++)
             {
                 var goal = Goals[goal_index];
-                if (goal.position != actor.GetPos()) continue;
+                if (goal.GetPos() != actor.GetPos()) continue;
 
-                switch (goal.state)
+                switch (goal.State)
                 {
                     case AntagonistState.Fortify:
                         Goals.RemoveAt(goal_index--);
@@ -142,11 +144,11 @@ namespace Script
             var bestDistance = float.PositiveInfinity;
             
             foreach (var goal in Goals.Where(goal => !worker || 
-                            CanBeUsedByWorker(goal.state)).Where(goal => bestAction == null ||
-                                                                         bestDistance > Vector2.Distance(goal.position, position) / goal.priority))
+                            CanBeUsedByWorker(goal.State)).Where(goal => bestAction == null ||
+                                                                         bestDistance > Vector2.Distance(goal.GetPos(), position) / goal.Priority))
             {
                 bestAction = goal;
-                bestDistance = Vector2.Distance(goal.position, position) / goal.priority;
+                bestDistance = Vector2.Distance(goal.GetPos(), position) / goal.Priority;
             }
 
             return bestAction;
@@ -171,7 +173,7 @@ namespace Script
             {
                 var angle = angleStep * i;
                 Vector2 rotated = centerPos + Quaternion.Euler(0, 0, angle) * (firstNodeOnLayerPos - centerPos);
-                Goals.Add(new AntagonistAction(AntagonistState.Fortify, rotated, 1f/ layer));
+                Goals.Add(new AntagonistAction(AntagonistState.Fortify, rotated, priority:1f/ layer));
             }
         }
 
@@ -199,7 +201,7 @@ namespace Script
                 lastLayerStart =  firstNodeOnLayerPos?? (lastLayerStart + expansionVector);
                     
                 if (firstNodeOnLayerPos == null) 
-                    Goals.Add(new AntagonistAction(AntagonistState.Fortify, lastLayerStart,1f/ layer));
+                    Goals.Add(new AntagonistAction(AntagonistState.Fortify, lastLayerStart,priority:1f/ layer));
                 
                 PlanFortifyLayer(center, lastLayerStart,  layer);
             }
@@ -211,10 +213,10 @@ namespace Script
             var tasks = new List<SubordinateAction>();
             if (action == null) return tasks;
             
-            switch (action.state)
+            switch (action.State)
             {
                 case AntagonistState.Fortify:
-                    tasks.Add(new SubordinateAction(SubordinateState.ActionTo, action.position, null));
+                    tasks.Add(new SubordinateAction(SubordinateState.ActionTo, action.GetPos(), null));
                     break;
                 case AntagonistState.Explore:
                     break;
@@ -229,7 +231,8 @@ namespace Script
             return tasks;
         }
 
-
+        public void onVisionEnter(ISelectable detectedElement){}
+        public void onVisionExit(ISelectable detectedElement){}
 
 
 

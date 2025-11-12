@@ -17,6 +17,7 @@ public class Worker : MonoBehaviour, ISelectable
     public ClickableType elementType { get; private set; }
     public int fractionID = 0;
     public float force = 1f;
+    public float visionRadius;
     
     // color change when selected 
     public Color DefaultColor = Color.darkOrange;
