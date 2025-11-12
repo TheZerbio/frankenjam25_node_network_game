@@ -104,17 +104,19 @@ public class Worker : MonoBehaviour, ISelectable
     
     public void OnDeselect() => isSelected = false;
 
-    public void OnActionToVoid(Vector2 position) => registerNewCommand(position, null);
+    public bool OnActionToVoid(Vector2 position) => registerNewCommand(position, null);
     
 
     public GameObject getGameObject() => gameObject;
 
-    public void OnActionToElement(ISelectable element) 
+    public bool OnActionToElement(ISelectable element) 
     {
         registerNewCommand(null, element);
         if (element.GetElementType() == ClickableType.Lemming)
             ClickDetection.GetInstance().changeSelected(
                 new List<ISelectable>(){this}, new List<ISelectable>(){element});
+
+        return true;
     }
    
 
@@ -242,7 +244,7 @@ public class Worker : MonoBehaviour, ISelectable
         NextCommands.RemoveAt(NextCommands.Count - 1);
     }
 
-    private void registerNewCommand(Vector2? position, ISelectable element)
+    private bool registerNewCommand(Vector2? position, ISelectable element)
     {
 
         bool concat = InputSystem.actions["Concat"].IsPressed(); 
@@ -254,6 +256,8 @@ public class Worker : MonoBehaviour, ISelectable
         {
             NextCommands = new List<Command>(){new Command(position, element)};
         }
+
+        return true;
     }
 
     private void DisplayPathIfPossible()

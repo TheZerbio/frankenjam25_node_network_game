@@ -6,25 +6,16 @@ using Unity.Mathematics.Geometry;
 using Unity.VisualScripting;
 using UnityEngine;
 using Math = Unity.Mathematics.Geometry.Math;
+using Random = UnityEngine.Random;
+
 
 namespace Script
 {
-    public class AntagonistReferer
+    public static class AntagonistReferer
     {
         private static Dictionary<int, AntagonistController> _antagonistControllers = new Dictionary<int, AntagonistController>();
         private static Dictionary<Vector2, int> _nodeCreationMap = new Dictionary<Vector2, int>();
-
-        private AntagonistReferer()
-        { }
-
-        private static AntagonistReferer singleton;
-
-        public static AntagonistReferer getInstance()
-        {
-            singleton ??= new AntagonistReferer();
-            return singleton;
-        }
-
+        
         public static void CreateNodeInNetwork(Node creator, Vector2 position)
         {
             if (creator.fractionID == GameManger.GetInstance().CurrentPlayer) return;
@@ -34,13 +25,13 @@ namespace Script
             creator.OnActionToVoid(position);
         }
         
-        public static int GetFractionID(Node node)
+        public static int GetFractionID(AntagonistNode node)
         {
-            node.fractionID =  _nodeCreationMap[node.transform.position];
-            return node.fractionID;
+            var fractionID =  _nodeCreationMap[node.GetPos()];
+            return fractionID;
         }
 
-        public AntagonistController GetControllerByID(int fractionID)
+        public static AntagonistController GetControllerByID(int fractionID)
         {
             if (_antagonistControllers.TryGetValue(fractionID, out var controller))
                 return controller;
@@ -65,7 +56,7 @@ namespace Script
 
     public enum SubordinateState
     {
-        ActionTo, ConnectWith, Wait, Produce 
+        ActionTo, ConnectWith, Produce 
     }
 
     public class SubordinateAction
@@ -100,12 +91,46 @@ namespace Script
         }
 
 
-        private List<Node> _networkNodes =  new List<Node>();
-        private List<AntagonistAction> Goals { get; set; }
+        private List<AntagonistNode> _networkNodes =  new List<AntagonistNode>();
+        private List<AntagonistAction> Goals = new List<AntagonistAction>();
 
-        public void RegisterNode(Node node)
+        public void RegisterNode(AntagonistNode actor)
         {
+            if (actor.getType() == ClickableType.Node)
+                if ((actor.isBaseNote && _networkNodes.Count > 0) || _networkNodes.Count == 1) 
+                    PlanFortification(actor.GetNode(), Random.Range(1, 3));
+
+            for (int goal_index = 0; goal_index < Goals.Count; goal_index++)
+            {
+                var goal = Goals[goal_index];
+                if (goal.position != actor.GetPos()) continue;
+
+                switch (goal.state)
+                {
+                    case AntagonistState.Fortify:
+                        Goals.RemoveAt(goal_index--);
+                        actor.actions.AddRange(_networkNodes
+                            .Where(node => 
+                                Vector2.Distance(node.GetPos(), actor.GetPos())
+                                <= actor.GetNode().workRadius)
+                            .Select(
+                                node => new SubordinateAction(SubordinateState.ConnectWith, null, node.GetNode())));
+                        break;
+                    
+                    default:
+                        break;
+                }
+                
+            }
             
+            
+            _networkNodes.Add(actor);
+        }
+
+        public void RequestAction(AntagonistNode actor)
+        {
+            var action = GetClosestAction(actor.GetPos(), actor.getType() == ClickableType.Lemming);
+            actor.actions = ToSubActions(actor, action);
         }
 
         private AntagonistAction GetClosestAction(Vector2 position, bool worker = false)
@@ -127,9 +152,7 @@ namespace Script
         }
 
         private static bool CanBeUsedByWorker(AntagonistState state)
-        {
-            return state != AntagonistState.Fortify && state != AntagonistState.Explore;
-        }
+            => state != AntagonistState.Fortify && state != AntagonistState.Explore;
 
         private void PlanFortifyLayer(Node center, Vector3 firstNodeOnLayerPos)
         {
@@ -161,11 +184,12 @@ namespace Script
                 Vector3? firstNodeOnLayerPos = null;
                 foreach (var node in _networkNodes)
                 {
-                    var nodeCenterDistance = Vector2.Distance(node.transform.position, center.transform.position);
-                    if (nodeCenterDistance <= (lastLayerStart + expansionVector).magnitude &&
-                        nodeCenterDistance > Vector2.Distance(lastLayerStart, center.transform.position))
+                    var nodeCenterDistance = Vector2.Distance(node.GetPos(), center.transform.position);
+                    var lastCenterDistance = Vector2.Distance(lastLayerStart, center.transform.position);
+                    if (nodeCenterDistance <= lastCenterDistance + center.workRadius &&
+                        nodeCenterDistance > lastCenterDistance)
                     {
-                        firstNodeOnLayerPos = node.transform.position;
+                        firstNodeOnLayerPos = node.GetPos();
                         break;
                     }
                 }
@@ -179,10 +203,12 @@ namespace Script
             }
         }
 
-        private List<SubordinateAction> ToSubActions(AntagonistAction action)
+        private List<SubordinateAction> ToSubActions(AntagonistNode actor, AntagonistAction action)
         {
             
-            List<SubordinateAction> tasks = new List<SubordinateAction>();
+            var tasks = new List<SubordinateAction>();
+            if (action == null) return tasks;
+            
             switch (action.state)
             {
                 case AntagonistState.Fortify:
@@ -197,11 +223,14 @@ namespace Script
                 default:
                     throw new ArgumentOutOfRangeException(nameof(action), action, null);
             }
+
+            return tasks;
         }
-        
-        
-        
-        
-        
+
+
+
+
+
+
     }
 }

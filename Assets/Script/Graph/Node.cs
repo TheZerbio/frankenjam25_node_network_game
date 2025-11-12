@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Script;
 using Script.Graph;
 using UnityEngine;
@@ -104,47 +105,44 @@ public abstract class Node: MonoBehaviour, ISelectable
         SetMDCIfPresent(false);
     }
 
-    public void OnActionToVoid(Vector2 position)
+    public bool OnActionToVoid(Vector2 position) => createNodeAt(position);
+    
+
+    public bool OnActionToElement(ISelectable element) => element is Node node && CreateEdgeTo(node);
+
+    private bool CreateEdgeTo(Node node)
     {
-        if (Vector2.Distance(position, gameObject.transform.position) < workRadius)
+        
+        // check if edge can be created 
+        if (node == null || lemmingCount + node.lemmingCount < _edgeCost || Vector2.Distance(
+                transform.position, node.transform.position) >= workRadius) return false;
+        
+        // check if the edge already exists -> true as the edge exists and doesn't need to be tried again 
+        if (edges.Any(ed => ed._node1 == node || ed._node2 == node)) return true; 
+        
+        if (!GameManger.GetInstance().CreateEdge(this, node, fractionID)) return false;
+
+        if (lemmingCount < _edgeCost)
         {
-            if (lemmingCount < NodeDuplicationCost)
-            {
-                /// todo send user a message that he hasn't enough Lemmings
-                return;
-            }
-            
-            GameManger manager = GameManger.GetInstance();
-            if (manager.BuildNodeFromNode(this,position)) 
-                lemmingCount -= NodeDuplicationCost;
+            node.lemmingCount = _edgeCost - lemmingCount;
+            lemmingCount = 0;
         }
+        else lemmingCount -= _edgeCost;
+        
+        return true;
+
+
     }
-
-    public void OnActionToElement(ISelectable element)
+    
+    private bool createNodeAt(Vector2 position)
     {
-        if (element is Node)
-        {
-            if (lemmingCount < _edgeCost)
-            {
-                // todo Anti Edgy User message
-                return;
-            }
-
-
-            Node other = (Node)element;
-            if (other != null && Vector2.Distance(transform.position, other.transform.position) <= workRadius)
-            {
-                bool inList = false;
-                foreach (var ed in edges)
-                {
-                    if (ed._node1 == other ||  ed._node2 == other)
-                        return;
-                }
-                if (!GameManger.GetInstance().CreateEdge(this, other, fractionID))
-                    Debug.Log("Could create edge because of Faction issues");
-                else lemmingCount -= _edgeCost;
-            }
-        }
+        if (Vector2.Distance(position, gameObject.transform.position) > workRadius || lemmingCount > lemmingCapacity)
+            return false;
+        
+        if (GameManger.GetInstance().BuildNodeFromNode(this, position) )
+            lemmingCount -= NodeDuplicationCost;
+        
+        return true;
     }
 
     public GameObject getGameObject() =>  gameObject;
@@ -252,7 +250,7 @@ public abstract class Node: MonoBehaviour, ISelectable
         {
             var current = queue.Dequeue();
 
-            // ✅ Check if the node is a BaseNode
+            // Check if the node is a BaseNode
             if (current is BaseNode)
                 return true;
 

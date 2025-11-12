@@ -78,7 +78,7 @@ namespace Script
             PlayerGraphs[fraction].AddNode(node);
             if (node.fractionID != CurrentPlayer)
             {
-                nodeGO.AddComponent<Antagonist>();
+                nodeGO.AddComponent<AntagonistNode>();
             }
             return node;
         }
@@ -130,6 +130,8 @@ namespace Script
         {
             if (Vector2.Distance(node.transform.position,position) > node.workRadius)
                 return false;
+            
+            // todo check if a node is already on this position -> return false
             
             Node newNode = CreateNode(position, node.fractionID);
             CreateEdge(node, newNode, node.fractionID);

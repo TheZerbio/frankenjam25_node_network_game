@@ -39,7 +39,7 @@ namespace Script.Graph
 
         private void DrawDashedLine()
         {
-            if (_lineRenderer == null) return;
+            if (_lineRenderer == null || worker == null) return;
             if (!worker.isSelected)
             {
                 _lineRenderer.gameObject.SetActive(false);

@@ -6,7 +6,7 @@ namespace Script
     public class BaseNode : Node
     {
         const int CAPACITY = 0; 
-        const float WORK_RADIUS = 120;
+        const float WORK_RADIUS = 60f;
         const float VISION_RADIUS = 150;
         const float CONNECTION_RADIUS = 50f;
 

@@ -242,6 +242,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4019678996815786270, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1918727714}
+    - targetCorrespondingSourceObject: {fileID: 4019678996815786270, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1918727719}
   m_SourcePrefab: {fileID: 100100000, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
 --- !u!1 &370263487 stripped
 GameObject:
@@ -533,6 +536,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4019678996815786270, guid: 46098bb6d91ada147a078e58c9c775f8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1985332418}
+    - targetCorrespondingSourceObject: {fileID: 4019678996815786270, guid: 46098bb6d91ada147a078e58c9c775f8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1985332419}
   m_SourcePrefab: {fileID: 100100000, guid: 46098bb6d91ada147a078e58c9c775f8, type: 3}
 --- !u!1001 &1888602017
 PrefabInstance:
@@ -608,10 +614,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1709e289386444ab1e97fc339ff3a97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Script.Antagonist
-  Edges: []
-  _nodeID: 0
-  currentNode: {fileID: 0}
-  _state: 4
 --- !u!114 &1918727718 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4720482898451495784, guid: 336a92d4d6e36b14e940ce78168c3cf3, type: 3}
@@ -623,6 +625,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 313ffe2a28c44b39add606c96c903bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Script.StandardNote
+--- !u!114 &1918727719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1918727713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 860cb96719494751aeaa9b32272ddbd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Script.AntagonistNode
+  State: 0
+  isBaseNote: 0
 --- !u!1 &1985332417 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4019678996815786270, guid: 46098bb6d91ada147a078e58c9c775f8, type: 3}
@@ -640,10 +656,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1709e289386444ab1e97fc339ff3a97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Script.Antagonist
-  Edges: []
-  _nodeID: 0
-  currentNode: {fileID: 0}
-  _state: 4
+--- !u!114 &1985332419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1985332417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 860cb96719494751aeaa9b32272ddbd1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Script.AntagonistNode
+  State: 0
+  isBaseNote: 0
 --- !u!1 &2001484203 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2364235185998897648, guid: 60529ec7ebfe8fa4db71277f487a2f0e, type: 3}

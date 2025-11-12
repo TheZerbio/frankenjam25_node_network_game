@@ -39,6 +39,7 @@ namespace Script.Graph
         public override void Update()
         {
             base.Update();
+            if (!(_node1 && _node2)) return;
             MoveBetweenNodes();
         }
 

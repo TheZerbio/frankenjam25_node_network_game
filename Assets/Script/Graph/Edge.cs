@@ -31,6 +31,11 @@ namespace Script.Graph
 
         public virtual void Update()
         {
+            if (_node1 == null || _node2 == null)
+            {
+                Destroy(gameObject);
+                return;
+            }
             if(CheckDissconect())
                 GameManger.GetInstance().DestroyEdge(this);
         }

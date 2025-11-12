@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Script;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,9 +15,9 @@ public interface ISelectable
     public ClickableType GetElementType();
     public void OnSelect();
     public void OnDeselect();
-    public void OnActionToVoid(Vector2 position);
+    public bool OnActionToVoid(Vector2 position);
     
-    public void OnActionToElement(ISelectable element);
+    public bool OnActionToElement(ISelectable element);
     
     public GameObject getGameObject();
     
